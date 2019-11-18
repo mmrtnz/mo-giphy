@@ -1,6 +1,6 @@
 // External Dependencies
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/styles';
 import {
@@ -9,10 +9,13 @@ import {
   ThemeProvider,
 } from '@material-ui/core/styles';
 
+
 // Local Dependencies
 import SearchBox from './Searchbox';
 
 // Local Variables
+const GiphyContext = React.createContext({});
+
 const propTypes = {
   classes: PropTypes.shape({}).isRequired,
 };
@@ -29,15 +32,28 @@ const styles = {
   },
 };
 
+const debugGiphyContext = giphyData =>
+  !console.log('giphyData', giphyData) && (
+    <span><br /><br /><br />I got data: {JSON.stringify(giphyData)}</span>
+  );
+
 // Component Definition
-const App = ({ classes }) => (
-  <ThemeProvider theme={theme}>
-    <div className={classes.root}>
-      <Typography variant="h3">Mo Gifs</Typography>
-      <SearchBox />
-    </div>
-  </ThemeProvider>
-);
+const App = ({ classes }) => {
+  const [giphyData, setGiphyData] = useState(null);
+  return (
+    <ThemeProvider theme={theme}>
+      <GiphyContext.Provider value={giphyData}>
+        <div className={classes.root}>
+          <Typography variant="h3">Mo Gifs</Typography>
+          <SearchBox onSearch={res => setGiphyData(res)} />
+        </div>
+        <GiphyContext.Consumer>
+          {debugGiphyContext}
+        </GiphyContext.Consumer>
+      </GiphyContext.Provider>
+    </ThemeProvider>
+  );
+};
 
 App.propTypes = propTypes;
 

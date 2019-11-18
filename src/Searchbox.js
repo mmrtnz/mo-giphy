@@ -14,6 +14,7 @@ import { queryGiphySearch } from './actions';
   // Local Variables
 const propTypes = {
   classes: PropTypes.shape({}).isRequired,
+  onSearch: PropTypes.func.isRequired,
 };
 
 const styles = {
@@ -24,13 +25,16 @@ const styles = {
 };
 
 // Component Definition
-const SearchBox = ({ classes }) => {
+const SearchBox = ({
+  classes,
+  onSearch,
+}) => {
   const [searchInput, setSearchInput] = useState('');
 
   const handleClick = () => {
     queryGiphySearch(searchInput)
       .then((result) => {
-        console.log('result', result);
+        onSearch(result);
       });
   };
 

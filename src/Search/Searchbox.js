@@ -8,8 +8,8 @@ import {
   TextField,
 } from '@material-ui/core';
 
-// Local Dependencies
-import { queryGiphySearch } from '../actions';
+// Internal Dependencies
+import { queryGiphySearch } from '../context/giphy/actions';
 
   // Local Variables
 const propTypes = {

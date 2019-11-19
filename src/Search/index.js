@@ -11,12 +11,12 @@ import {
 
 // Internal Dependencies
 import GiphyFeed from '../GiphyFeed';
+import { GiphyContextProvider } from '../context/giphy';
 
 // Local Dependencies
 import SearchBox from './Searchbox';
 
 // Local Variables
-export const GiphyContext = React.createContext({});
 
 const propTypes = {
   classes: PropTypes.shape({}).isRequired,
@@ -34,23 +34,19 @@ const styles = {
   },
 };
 
-// const debugGiphyContext = giphyData =>
-//   !console.log('giphyData', giphyData) && (
-//     <span><br /><br /><br />I got data: {JSON.stringify(giphyData)}</span>
-//   );
-
 // Component Definition
 const Search = ({ classes }) => {
   const [giphyData, setGiphyData] = useState(null);
+
   return (
     <ThemeProvider theme={theme}>
-      <GiphyContext.Provider value={giphyData}>
+      <GiphyContextProvider value={giphyData}>
         <div className={classes.root}>
           <Typography variant="h3">Mo Gifs</Typography>
           <SearchBox onSearch={res => setGiphyData(res)} />
         </div>
         <GiphyFeed />
-      </GiphyContext.Provider>
+      </GiphyContextProvider>
     </ThemeProvider>
   );
 };

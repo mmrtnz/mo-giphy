@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { GridList } from '@material-ui/core';
 
 // Internal Dependencies
-import { GiphyContext } from '../Search';
+import GiphyContext from '../context/giphy';
 
 // Local Dependencies
 import GiphyTile from './giphy-tile';
@@ -26,15 +26,15 @@ const styles = {
 
 // Component Definition
 const GiphyFeed = ({ classes }) => {
-  const giphyData = useContext(GiphyContext);
+  const giphyApiData = useContext(GiphyContext);
 
-  if (!giphyData) {
+  if (!giphyApiData) {
     return (
       <div>Nothing to see here</div>
     );
   }
 
-  const gifElements = giphyData.data.map(({
+  const gifElements = giphyApiData.data.map(({
     id,
     images,
     title,

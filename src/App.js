@@ -9,12 +9,12 @@ import {
   ThemeProvider,
 } from '@material-ui/core/styles';
 
-
 // Local Dependencies
 import SearchBox from './Searchbox';
+import GiphyFeed from './GiphyFeed';
 
 // Local Variables
-const GiphyContext = React.createContext({});
+export const GiphyContext = React.createContext({});
 
 const propTypes = {
   classes: PropTypes.shape({}).isRequired,
@@ -32,10 +32,10 @@ const styles = {
   },
 };
 
-const debugGiphyContext = giphyData =>
-  !console.log('giphyData', giphyData) && (
-    <span><br /><br /><br />I got data: {JSON.stringify(giphyData)}</span>
-  );
+// const debugGiphyContext = giphyData =>
+//   !console.log('giphyData', giphyData) && (
+//     <span><br /><br /><br />I got data: {JSON.stringify(giphyData)}</span>
+//   );
 
 // Component Definition
 const App = ({ classes }) => {
@@ -47,9 +47,7 @@ const App = ({ classes }) => {
           <Typography variant="h3">Mo Gifs</Typography>
           <SearchBox onSearch={res => setGiphyData(res)} />
         </div>
-        <GiphyContext.Consumer>
-          {debugGiphyContext}
-        </GiphyContext.Consumer>
+        <GiphyFeed />
       </GiphyContext.Provider>
     </ThemeProvider>
   );

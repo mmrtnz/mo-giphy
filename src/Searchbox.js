@@ -29,7 +29,7 @@ const SearchBox = ({
   classes,
   onSearch,
 }) => {
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState('hello');
 
   const handleClick = () => {
     queryGiphySearch(searchInput)

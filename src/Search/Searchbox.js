@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 
 // Local Dependencies
-import { queryGiphySearch } from './actions';
+import { queryGiphySearch } from '../actions';
 
   // Local Variables
 const propTypes = {

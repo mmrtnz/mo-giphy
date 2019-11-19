@@ -9,9 +9,11 @@ import {
   ThemeProvider,
 } from '@material-ui/core/styles';
 
+// Internal Dependencies
+import GiphyFeed from '../GiphyFeed';
+
 // Local Dependencies
 import SearchBox from './Searchbox';
-import GiphyFeed from './GiphyFeed';
 
 // Local Variables
 export const GiphyContext = React.createContext({});
@@ -38,7 +40,7 @@ const styles = {
 //   );
 
 // Component Definition
-const App = ({ classes }) => {
+const Search = ({ classes }) => {
   const [giphyData, setGiphyData] = useState(null);
   return (
     <ThemeProvider theme={theme}>
@@ -53,6 +55,6 @@ const App = ({ classes }) => {
   );
 };
 
-App.propTypes = propTypes;
+Search.propTypes = propTypes;
 
-export default withStyles(styles)(App);
+export default withStyles(styles)(Search);

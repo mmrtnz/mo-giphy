@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { GridList } from '@material-ui/core';
 
 // Internal Dependencies
-import { GiphyContext } from '../App';
+import { GiphyContext } from '../Search';
 
 // Local Dependencies
 import GiphyTile from './giphy-tile';

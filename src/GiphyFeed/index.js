@@ -40,6 +40,7 @@ const GiphyFeed = ({ classes }) => {
     title,
   }) => (
     <GiphyTile
+      id={id}
       image={images.fixed_width}
       key={`gif-${id}`}
       title={title}

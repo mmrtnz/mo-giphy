@@ -1,7 +1,6 @@
 // External Dependencies
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/styles';
 
 // Internal Dependencies
@@ -35,7 +34,6 @@ const Search = ({ classes }) => {
   return (
     <React.Fragment>
       <div className={classes.root}>
-        <Typography variant="h3">Mo Gifs</Typography>
         <SearchBox onSearch={handleSearch} />
       </div>
       <GiphyFeed />

@@ -35,6 +35,7 @@ const SearchBox = ({
     <div className={classes.root}>
         <TextField
           fullWidth
+          label="Search GIFs"
           onChange={e => setSearchInput(e.target.value)}
           value={searchInput}
         />

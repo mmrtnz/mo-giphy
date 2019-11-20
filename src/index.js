@@ -9,6 +9,7 @@ import {
 
 // Internal Dependencies
 import './index.css';
+import AppNav from './app-nav';
 import GiphyProvider from './context/giphy';
 
 // Local Dependencies
@@ -22,7 +23,10 @@ theme = responsiveFontSizes(theme);
 const AppElement = (
   <ThemeProvider theme={theme}>
     <GiphyProvider>
-      <Router />
+      <AppNav />
+      <div style={{ paddingTop: 36 }}>
+        <Router />
+      </div>
     </GiphyProvider>
   </ThemeProvider>
 );

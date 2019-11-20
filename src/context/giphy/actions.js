@@ -8,6 +8,7 @@ import { GIPHY_GET_SUCCESS } from './action-types';
 const protocol = 'https';
 const baseURL = 'api.giphy.com/v1/gifs/search';
 
+// TODO use fetch
 export const queryGiphySearch = (q, dispatch) => new Promise((resolve, reject) => {
   const apiKey = process.env.REACT_APP_GIPHY_KEY;
   const url = `${protocol}://${baseURL}?api_key=${apiKey}&q=${q}`;

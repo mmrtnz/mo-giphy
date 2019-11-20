@@ -15,9 +15,13 @@ const propTypes = {
 };
 
 const styles = {
+  button: {
+    marginLeft: 24,
+  },
   root: {
     display: 'flex',
     flexDirection: 'row',
+    margin: 24,
   },
 };
 
@@ -35,6 +39,7 @@ const SearchBox = ({
           value={searchInput}
         />
         <Button
+          className={classes.button}
           onClick={() => onSearch(searchInput)}
           variant="contained"
         >

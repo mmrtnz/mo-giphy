@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core/styles';
 
 // Internal Dependencies
+import './index.css';
 import GiphyProvider from './context/giphy';
 
 // Local Dependencies

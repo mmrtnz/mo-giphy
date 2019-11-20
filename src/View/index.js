@@ -1,23 +1,26 @@
 // External Dependencies
 import React, { useContext } from 'react';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { useParams } from 'react-router-dom';
 
 // Internal Dependencies
+import { queryGiphyById } from '../context/giphy/actions';
 import { GiphyContext } from '../context/giphy';
 import { getGifById } from '../context/giphy/selectors';
 import GifImage from '../gif-image';
 
 // Component Definition
 const View = () => {
-  const { state } = useContext(GiphyContext);
+  const { state, dispatch } = useContext(GiphyContext);
   const { id } = useParams();
-  console.log('getGifById', getGifById);
   const gifData = getGifById(state, id);
 
   if (!gifData) {
-    return (
-      <span>TODO fetch api for specific gif</span>
-    );
+    // Call the API for specific gif if we haven't already
+    if (!state.single.isGetting) {
+      queryGiphyById(id, dispatch);
+    }
+    return <CircularProgress />;
   }
 
   const {

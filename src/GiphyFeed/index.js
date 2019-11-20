@@ -28,7 +28,7 @@ const styles = {
 const GiphyFeed = ({ classes }) => {
   const { state } = useContext(GiphyContext);
 
-  const giphyApiData = state.apiData;
+  const giphyApiData = state.feed.apiData;
 
   if (!giphyApiData) {
     return (

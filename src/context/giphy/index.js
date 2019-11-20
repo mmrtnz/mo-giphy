@@ -3,29 +3,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Local Dependencies
-import {
-  GIPHY_GET_SUCCESS,
-} from './action-types';
+import reducer from './reducers';
 
 // Local Variables
 export const GiphyContext = React.createContext({});
 
 const initialState = {
-  apiData: null,
-  error: null,
+  feed: {
+    apiData: null,
+    error: null,
+    isGetting: false,
+  },
+  single: {
+    apiData: null,
+    error: null,
+    isGetting: false,
+  },
 };
 
 const propTypes = {
   children: PropTypes.node.isRequired,
-};
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case GIPHY_GET_SUCCESS:
-      return { ...state, apiData: action.payload };
-    default:
-      return state;
-  }
 };
 
 // Component Definition

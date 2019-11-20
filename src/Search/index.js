@@ -1,29 +1,21 @@
 // External Dependencies
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/styles';
-import {
-  createMuiTheme,
-  responsiveFontSizes,
-  ThemeProvider,
-} from '@material-ui/core/styles';
 
 // Internal Dependencies
 import GiphyFeed from '../GiphyFeed';
-import { GiphyContextProvider } from '../context/giphy';
+import { GiphyContext } from '../context/giphy';
+import { queryGiphySearch } from '../context/giphy/actions';
 
 // Local Dependencies
 import SearchBox from './Searchbox';
 
 // Local Variables
-
 const propTypes = {
   classes: PropTypes.shape({}).isRequired,
 };
-
-let theme = createMuiTheme();
-theme = responsiveFontSizes(theme);
 
 const styles = {
   root: {
@@ -36,18 +28,18 @@ const styles = {
 
 // Component Definition
 const Search = ({ classes }) => {
-  const [giphyData, setGiphyData] = useState(null);
+  const { dispatch } = useContext(GiphyContext);
+
+  const handleSearch = searchTerm => queryGiphySearch(searchTerm, dispatch);
 
   return (
-    <ThemeProvider theme={theme}>
-      <GiphyContextProvider value={giphyData}>
-        <div className={classes.root}>
-          <Typography variant="h3">Mo Gifs</Typography>
-          <SearchBox onSearch={res => setGiphyData(res)} />
-        </div>
-        <GiphyFeed />
-      </GiphyContextProvider>
-    </ThemeProvider>
+    <React.Fragment>
+      <div className={classes.root}>
+        <Typography variant="h3">Mo Gifs</Typography>
+        <SearchBox onSearch={handleSearch} />
+      </div>
+      <GiphyFeed />
+    </React.Fragment>
   );
 };
 

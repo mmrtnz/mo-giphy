@@ -8,9 +8,6 @@ import {
   TextField,
 } from '@material-ui/core';
 
-// Internal Dependencies
-import { queryGiphySearch } from '../context/giphy/actions';
-
   // Local Variables
 const propTypes = {
   classes: PropTypes.shape({}).isRequired,
@@ -30,14 +27,6 @@ const SearchBox = ({
   onSearch,
 }) => {
   const [searchInput, setSearchInput] = useState('hello');
-
-  const handleClick = () => {
-    queryGiphySearch(searchInput)
-      .then((result) => {
-        onSearch(result);
-      });
-  };
-
   return (
     <div className={classes.root}>
         <TextField
@@ -46,7 +35,7 @@ const SearchBox = ({
           value={searchInput}
         />
         <Button
-          onClick={handleClick}
+          onClick={() => onSearch(searchInput)}
           variant="contained"
         >
           Search

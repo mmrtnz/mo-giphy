@@ -2,27 +2,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-} from 'react-router-dom';
+  createMuiTheme,
+  responsiveFontSizes,
+  ThemeProvider,
+} from '@material-ui/core/styles';
+
+// Internal Dependencies
+import GiphyProvider from './context/giphy';
 
 // Local Dependencies
-import Search from './Search';
-import View from './View';
+import Router from './router';
 import * as serviceWorker from './serviceWorker';
 
+// Local Variables
+let theme = createMuiTheme();
+theme = responsiveFontSizes(theme);
+
 const AppElement = (
-  <Router>
-    <Switch>
-      <Route path="/view/:id">
-        <View />
-      </Route>
-      <Route path="/">
-        <Search />
-      </Route>
-    </Switch>
-  </Router>
+  <ThemeProvider theme={theme}>
+    <GiphyProvider>
+      <Router />
+    </GiphyProvider>
+  </ThemeProvider>
 );
 
 ReactDOM.render(AppElement, document.getElementById('root'));

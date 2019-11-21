@@ -9,6 +9,7 @@ import { GiphyContext } from '../context/giphy';
 
 // Local Dependencies
 import GiphyTile from './giphy-tile';
+import NoResults from './no-results';
 
 // Local Variables
 const propTypes = {
@@ -30,10 +31,14 @@ const GiphyFeed = ({ classes }) => {
 
   const giphyApiData = state.feed.apiData;
 
+  // Initial state
   if (!giphyApiData) {
-    return (
-      <div>Nothing to see here</div>
-    );
+    return null;
+  }
+
+  // Empty state
+  if (giphyApiData && !giphyApiData.pagination.total_count) {
+    return <NoResults />;
   }
 
   const gifElements = giphyApiData.data.map(({

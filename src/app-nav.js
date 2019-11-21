@@ -75,7 +75,7 @@ const AppNav = ({ classes }) => {
     </Typography>
   ) : (
     <Button onClick={e => setAnchorEl(e.currentTarget)}>
-      Login
+      Login / Sign Up
     </Button>
   );
 

@@ -1,6 +1,6 @@
 // External Dependencies
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Button,
   Popover,
@@ -9,6 +9,7 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 
 // Internal Dependencies
+import { DbContext } from './context/db';
 import { queryDbLogin } from './context/db/actions';
 
 // Local Dependencies
@@ -47,9 +48,11 @@ const transformOrigin = {
 
 // Component Definition
 const AppNav = ({ classes }) => {
+  const { dispatch } = useContext(DbContext);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleLogin = (username, password) => queryDbLogin(username, password);
+  const handleLogin = (username, password) =>
+    queryDbLogin(username, password, dispatch);
 
   return (
     <div className={classes.root}>

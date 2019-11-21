@@ -1,0 +1,10 @@
+// Action Type Definitions
+const DB_GET_FAILURE = 'DB_GET_FAILURE';
+const DB_GET_REQUEST = 'DB_GET_REQUEST';
+const DB_GET_SUCCESS = 'DB_GET_SUCCESS';
+
+export {
+  DB_GET_FAILURE,
+  DB_GET_REQUEST,
+  DB_GET_SUCCESS,
+};

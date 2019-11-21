@@ -10,7 +10,6 @@ import {
 export default (state, action) => {
   switch (action.type) {
     case GIPHY_GET_REQUEST:
-      console.log('GIPHY_GET_REQUEST');
       return {
         ...state,
         feed: {
@@ -19,7 +18,6 @@ export default (state, action) => {
         },
       };
     case GIPHY_GET_SUCCESS:
-      console.log('GIPHY_GET_SUCCESS');
       return {
         ...state,
         feed: {
@@ -29,7 +27,6 @@ export default (state, action) => {
         },
       };
     case GIPHY_GET_REQUEST_SINGLE:
-      console.log('GIPHY_GET_REQUEST_SINGLE');
       return {
         ...state,
         single: {
@@ -38,7 +35,6 @@ export default (state, action) => {
         },
       };
     case GIPHY_GET_SUCCESS_SINGLE:
-      console.log('GIPHY_GET_SUCCESS_SINGLE');
       return {
         ...state,
         single: {

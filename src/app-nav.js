@@ -1,17 +1,18 @@
 // External Dependencies
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import EyeIcon from '@material-ui/icons/RemoveRedEye';
 import {
   Button,
   Popover,
   Typography,
-  TextField,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
 // Internal Dependencies
 import { queryDbLogin } from './context/db/actions';
+
+// Local Dependencies
+import LoginForm from './login-form';
 
 // Local Variables
 const propTypes = {
@@ -22,11 +23,6 @@ const styles = {
   appName: {
     marginLeft: 16,
   },
-  popoverContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    margin: '0px 16px',
-  },
   root: {
     backgroundColor: '#fff',
     borderBottom: 'solid 1px #ddd',
@@ -36,10 +32,6 @@ const styles = {
     justifyContent: 'space-between',
     width: '100%',
     zIndex: 2,
-  },
-  showPasswordIcon: {
-    position: 'absolute',
-    transform: 'translate(-24px, 20px)',
   },
 };
 
@@ -56,11 +48,8 @@ const transformOrigin = {
 // Component Definition
 const AppNav = ({ classes }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = () => queryDbLogin(username, password);
+  const handleLogin = (username, password) => queryDbLogin(username, password);
 
   return (
     <div className={classes.root}>
@@ -80,27 +69,7 @@ const AppNav = ({ classes }) => {
         onClose={() => setAnchorEl(null)}
         transformOrigin={transformOrigin}
       >
-        <div className={classes.popoverContent}>
-          <TextField
-            label="Username"
-            onChange={e => setUsername(e.target.value)}
-            value={username}
-          />
-          <div>
-            <TextField
-              label="Password"
-              onChange={e => setPassword(e.target.value)}
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-            />
-            <EyeIcon
-              className={classes.showPasswordIcon}
-              onMouseEnter={() => setShowPassword(true)}
-              onMouseLeave={() => setShowPassword(false)}
-            />
-          </div>
-          <Button onClick={handleLogin}>Login</Button>
-        </div>
+        <LoginForm onLogin={handleLogin} />
       </Popover>
     </div>
   );

@@ -34,6 +34,9 @@ const styles = {
     width: '100%',
     zIndex: 2,
   },
+  welcomeText: {
+    lineHeight: 2.75,
+  },
 };
 
 const anchorOrigin = {
@@ -48,11 +51,27 @@ const transformOrigin = {
 
 // Component Definition
 const AppNav = ({ classes }) => {
-  const { dispatch } = useContext(DbContext);
+  const { state, dispatch } = useContext(DbContext);
+  const { apiData } = state;
+  const accountUsername = apiData ? apiData.username : null;
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleLogin = (username, password) =>
-    queryDbLogin(username, password, dispatch);
+  const handleLogin = (user, pass) =>
+    queryDbLogin(user, pass, dispatch);
+
+  // If we have the username saved, we know we've logged in
+  const loginElement = accountUsername ? (
+    <Typography
+      className={classes.welcomeText}
+      variant="subtitle1"
+    >
+      Hello {accountUsername}
+    </Typography>
+  ) : (
+    <Button onClick={e => setAnchorEl(e.currentTarget)}>
+      Login
+    </Button>
+  );
 
   return (
     <div className={classes.root}>
@@ -62,13 +81,11 @@ const AppNav = ({ classes }) => {
       >
         Mo GIFs
       </Typography>
-      <Button onClick={e => setAnchorEl(e.currentTarget)}>
-        Login
-      </Button>
+      {loginElement}
       <Popover
         anchorEl={anchorEl}
         anchorOrigin={anchorOrigin}
-        open={Boolean(anchorEl)}
+        open={Boolean(anchorEl) && !accountUsername}
         onClose={() => setAnchorEl(null)}
         transformOrigin={transformOrigin}
       >

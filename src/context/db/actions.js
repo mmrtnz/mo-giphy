@@ -1,6 +1,6 @@
 // External Dependencies
 import { Base64 } from 'js-base64';
-/* eslint-disable */
+
 // Local Dependencies
 import {
   DB_GET_FAILURE,
@@ -23,11 +23,27 @@ const queryDbLogin = async (username, password, dispatch) => {
 
   try {
     const data = await fetch(url, { headers });
-    // const dataJSON = await data.json();
-    console.log('data', data);
-    // console.log('dataJSON', dataJSON);
+
+    if (data.status === 401) {
+      dispatch({
+        type: DB_GET_FAILURE,
+        payload: 'Invalid username or password',
+      });
+      return;
+    }
+
+    const dataJSON = await data.json();
+
+    dispatch({
+      type: DB_GET_SUCCESS,
+      payload: dataJSON,
+    });
   } catch (e) {
-    console.log('Error calling fetch for database:', e);
+    console.log('Unxpected error when logging in: ', e);
+    dispatch({
+      type: DB_GET_FAILURE,
+      payload: 'There was a problem logging into your account. Please try again later.',
+    });
   }
 };
 

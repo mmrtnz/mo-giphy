@@ -1,12 +1,18 @@
 // External Dependencies
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import EyeIcon from '@material-ui/icons/RemoveRedEye';
 import {
   Button,
+  CircularProgress,
   TextField,
+  Typography,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+
+// Local Dependencies
+import { DbContext } from './context/db';
 
 // Local Variables
 const propTypes = {
@@ -15,10 +21,23 @@ const propTypes = {
 };
 
 const styles = {
+  button: {
+    marginTop: 8,
+  },
+  error: {
+    backgroundColor: '#ef9a9a', // red200
+    borderRadius: 4,
+    color: 'rgba(0,0,0,.85)',
+    display: 'flex',
+    margin: '8px 0px',
+  },
+  errorIcon: {
+    margin: 'auto 8px',
+  },
   root: {
     display: 'flex',
     flexDirection: 'column',
-    margin: '0px 16px',
+    margin: '0px 16px 16px 16px',
   },
   showPasswordIcon: {
     position: 'absolute',
@@ -28,6 +47,7 @@ const styles = {
 
 // Component Definition
 const LoginForm = ({ classes, onLogin }) => {
+  const { state } = useContext(DbContext);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
     password: '',
@@ -49,7 +69,7 @@ const LoginForm = ({ classes, onLogin }) => {
 
   const validateLogin = () => {
     if (username && password) {
-      onLogin();
+      onLogin(username, password);
     } else {
       setForm({
         ...form,
@@ -59,8 +79,29 @@ const LoginForm = ({ classes, onLogin }) => {
     }
   };
 
+  const buttonElement = state.isGetting
+    ? <CircularProgress />
+    : (
+      <Button
+        className={classes.button}
+        onClick={validateLogin}
+        variant="outlined"
+      >
+        Login
+      </Button>
+    );
+
+  const errorElement = state.error
+    ? (
+      <div className={classes.error}>
+        <ErrorOutlineIcon className={classes.errorIcon} />
+        <Typography variant="subtitle2">{state.error}</Typography>
+      </div>
+    ) : null;
+
   return (
     <div className={classes.root}>
+      {errorElement}
       <TextField
         error={Boolean(usernameError)}
         helperText={usernameError}
@@ -87,7 +128,7 @@ const LoginForm = ({ classes, onLogin }) => {
           onMouseLeave={() => setShowPassword(false)}
         />
       </div>
-      <Button onClick={validateLogin}>Login</Button>
+      {buttonElement}
     </div>
   );
 };

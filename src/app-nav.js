@@ -10,7 +10,10 @@ import { withStyles } from '@material-ui/core/styles';
 
 // Internal Dependencies
 import { DbContext } from './context/db';
-import { queryDbLogin } from './context/db/actions';
+import {
+  queryDbLogin,
+  queryDbSignUp,
+} from './context/db/actions';
 
 // Local Dependencies
 import LoginForm from './login-form';
@@ -59,6 +62,9 @@ const AppNav = ({ classes }) => {
   const handleLogin = (user, pass) =>
     queryDbLogin(user, pass, dispatch);
 
+  const handleSignUp = (user, pass) =>
+    queryDbSignUp(user, pass, dispatch);
+
   // If we have the username saved, we know we've logged in
   const loginElement = accountUsername ? (
     <Typography
@@ -89,7 +95,10 @@ const AppNav = ({ classes }) => {
         onClose={() => setAnchorEl(null)}
         transformOrigin={transformOrigin}
       >
-        <LoginForm onLogin={handleLogin} />
+        <LoginForm
+          onLogin={handleLogin}
+          onSignUp={handleSignUp}
+        />
       </Popover>
     </div>
   );

@@ -18,9 +18,14 @@ import { DbContext } from './context/db';
 const propTypes = {
   classes: PropTypes.shape({}).isRequired,
   onLogin: PropTypes.func.isRequired,
+  onSignUp: PropTypes.func.isRequired,
 };
 
 const styles = {
+  actionContainer: {
+    display: 'flex',
+    justifyContent: 'space-around',
+  },
   button: {
     marginTop: 8,
   },
@@ -46,7 +51,11 @@ const styles = {
 };
 
 // Component Definition
-const LoginForm = ({ classes, onLogin }) => {
+const LoginForm = ({
+  classes,
+  onLogin,
+  onSignUp,
+}) => {
   const { state } = useContext(DbContext);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
@@ -67,9 +76,9 @@ const LoginForm = ({ classes, onLogin }) => {
     [`${e.target.name}Error`]: false,
   });
 
-  const validateLogin = () => {
+  const validateForm = (callback) => {
     if (username && password) {
-      onLogin(username, password);
+      callback(username, password);
     } else {
       setForm({
         ...form,
@@ -79,16 +88,27 @@ const LoginForm = ({ classes, onLogin }) => {
     }
   };
 
-  const buttonElement = state.isGetting
+  const validateLogin = () => validateForm(onLogin);
+  const validateSignUp = () => validateForm(onSignUp);
+
+  const actionElement = state.isGetting
     ? <CircularProgress />
     : (
-      <Button
-        className={classes.button}
-        onClick={validateLogin}
-        variant="outlined"
-      >
-        Login
-      </Button>
+      <div className={classes.actionContainer}>
+        <Button
+          className={classes.button}
+          onClick={validateLogin}
+        >
+          Login
+        </Button>
+        <Button
+          className={classes.button}
+          onClick={validateSignUp}
+          variant="outlined"
+        >
+          Sign Up
+        </Button>
+      </div>
     );
 
   const errorElement = state.error
@@ -128,7 +148,7 @@ const LoginForm = ({ classes, onLogin }) => {
           onMouseLeave={() => setShowPassword(false)}
         />
       </div>
-      {buttonElement}
+      {actionElement}
     </div>
   );
 };

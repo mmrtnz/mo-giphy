@@ -7,7 +7,7 @@ const { Account } = require('./models');
 
 const router = express.Router();
 
-router.get('/api/login', (req, res) => {
+const handleLogin = (req, res) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
@@ -34,9 +34,9 @@ router.get('/api/login', (req, res) => {
       res.status(401).end();
     }
   });
-});
+};
 
-router.post('/api/signup', (req, res) => {
+const handleSignUp = (req, res) => {
   const {
     password,
     username,
@@ -63,7 +63,6 @@ router.post('/api/signup', (req, res) => {
 
   // Check if the username is taken
   Account.find({ username: decodedUsername }).exec((err, accounts) => {
-    console.log('accounts', accounts);
     if (accounts.length) {
       res.status(403).end();
     } else {
@@ -71,6 +70,9 @@ router.post('/api/signup', (req, res) => {
       res.json({ username: account.username }).end();
     }
   });
-});
+};
+
+router.get('/api/login', handleLogin);
+router.post('/api/signup', handleSignUp);
 
 module.exports = router;

@@ -24,8 +24,10 @@ const GifImage = ({
     width,
   },
   title,
+  ...other
 }) => (
   <img
+    {...other}
     alt={title}
     height={height}
     src={webp}

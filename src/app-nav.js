@@ -10,6 +10,7 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 
 // Internal Dependencies
+import { queryDbLogin } from './context/db/actions';
 
 // Local Variables
 const propTypes = {
@@ -53,6 +54,8 @@ const AppNav = ({ classes }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const handleLogin = () => queryDbLogin(username, password);
+
   return (
     <div className={classes.root}>
       <Typography
@@ -80,9 +83,10 @@ const AppNav = ({ classes }) => {
           <TextField
             label="Password"
             onChange={e => setPassword(e.target.value)}
+            type="password"
             value={password}
           />
-          <Button>Login</Button>
+          <Button onClick={handleLogin}>Login</Button>
         </div>
       </Popover>
     </div>

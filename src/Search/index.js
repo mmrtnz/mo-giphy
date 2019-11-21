@@ -6,7 +6,6 @@ import { withStyles } from '@material-ui/styles';
 // Internal Dependencies
 import GiphyFeed from '../GiphyFeed';
 import { GiphyContext } from '../context/giphy';
-import { queryDb } from '../context/db/actions';
 import { queryGiphyBySearch } from '../context/giphy/actions';
 
 // Local Dependencies
@@ -31,7 +30,6 @@ const Search = ({ classes }) => {
   const { dispatch } = useContext(GiphyContext);
 
   const handleSearch = searchTerm => queryGiphyBySearch(searchTerm, dispatch);
-  queryDb();
 
   return (
     <React.Fragment>

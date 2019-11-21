@@ -1,18 +1,27 @@
+// External Dependencies
+import { Base64 } from 'js-base64';
+
 // Local Variables
 const protocol = 'http';
-const baseURL = `${protocol}://localhost:3001`;
+const baseURL = `${protocol}://localhost:3001/api`;
 
-const queryDb = async () => {
+const queryDbLogin = async (username, password) => {
+  const url = `${baseURL}/login`;
+  const credentials = `${username}:${password}`;
+  const headers = {
+    Authorization: `Basic ${Base64.encode(credentials)}`,
+  };
+
   try {
-    console.log('fetchin');
-    const data = await fetch(baseURL);
-    // const dataJSON = await data.json();
+    const data = await fetch(url, { headers });
+    const dataJSON = await data.json();
     console.log('data', data);
+    console.log('dataJSON', dataJSON);
   } catch (e) {
     console.log('Error calling fetch for database:', e);
   }
 };
 
 export {
-  queryDb,
+  queryDbLogin,
 };

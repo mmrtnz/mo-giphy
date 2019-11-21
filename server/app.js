@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 // External Dependencies
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -13,6 +14,7 @@ const app = express();
 const port = process.env.DB_PORT || 3001;
 
 app.use(cors());
+app.use(bodyParser.json());
 
 // Connect to database
 const uri = process.env.DB_URI;

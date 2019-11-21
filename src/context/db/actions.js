@@ -62,7 +62,7 @@ const queryDbSignUp = async (username, password, dispatch) => {
       headers: { 'Content-Type': 'application/json' },
      });
 
-    if (data.status === 401) {
+    if (data.status === 403) {
       dispatch({
         type: DB_GET_FAILURE,
         payload: 'Username already exists',

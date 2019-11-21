@@ -1,6 +1,7 @@
 // External Dependencies
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import EyeIcon from '@material-ui/icons/RemoveRedEye';
 import {
   Button,
   Popover,
@@ -36,6 +37,10 @@ const styles = {
     width: '100%',
     zIndex: 2,
   },
+  showPasswordIcon: {
+    position: 'absolute',
+    transform: 'translate(-24px, 20px)',
+  },
 };
 
 const anchorOrigin = {
@@ -53,6 +58,7 @@ const AppNav = ({ classes }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => queryDbLogin(username, password);
 
@@ -80,12 +86,19 @@ const AppNav = ({ classes }) => {
             onChange={e => setUsername(e.target.value)}
             value={username}
           />
-          <TextField
-            label="Password"
-            onChange={e => setPassword(e.target.value)}
-            type="password"
-            value={password}
-          />
+          <div>
+            <TextField
+              label="Password"
+              onChange={e => setPassword(e.target.value)}
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+            />
+            <EyeIcon
+              className={classes.showPasswordIcon}
+              onMouseEnter={() => setShowPassword(true)}
+              onMouseLeave={() => setShowPassword(false)}
+            />
+          </div>
           <Button onClick={handleLogin}>Login</Button>
         </div>
       </Popover>

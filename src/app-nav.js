@@ -13,7 +13,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { DbContext } from './context/db';
 import {
   queryDbLogin,
-  queryDbSignUp,
+  saveSignUp,
 } from './context/db/actions';
 
 // Local Dependencies
@@ -64,10 +64,10 @@ const AppNav = ({ classes }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleLogin = (user, pass) =>
-    queryDbLogin(user, pass, dispatch);
+    queryDbLogin(dispatch, user, pass);
 
   const handleSignUp = (user, pass) =>
-    queryDbSignUp(user, pass, dispatch);
+    saveSignUp(dispatch, user, pass);
 
   // If we have the username saved, we know we've logged in
   const loginElement = accountUsername ? (

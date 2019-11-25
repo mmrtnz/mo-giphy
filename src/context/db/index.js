@@ -12,6 +12,7 @@ const initialState = {
   apiData: null,
   error: null,
   isGetting: false,
+  isPosting: false,
 };
 
 const propTypes = {

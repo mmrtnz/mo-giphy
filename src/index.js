@@ -9,7 +9,6 @@ import {
 
 // Internal Dependencies
 import './index.css';
-import AppNav from './app-nav';
 import DbProvider from './context/db';
 import GiphyProvider from './context/giphy';
 
@@ -25,10 +24,7 @@ const AppElement = (
   <ThemeProvider theme={theme}>
     <GiphyProvider>
       <DbProvider>
-        <AppNav />
-        <div style={{ paddingTop: 36 }}>
-          <Router />
-        </div>
+        <Router />
       </DbProvider>
     </GiphyProvider>
   </ThemeProvider>

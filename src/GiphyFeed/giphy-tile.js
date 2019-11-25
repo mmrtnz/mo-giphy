@@ -1,8 +1,8 @@
 // External Dependencies
 import PropTypes from 'prop-types';
 import React from 'react';
-import { GridListTile } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { GridListTile } from '@material-ui/core';
 
 // Internal Dependencies
 import GifImage from '../gif-image';

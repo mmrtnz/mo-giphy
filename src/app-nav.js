@@ -6,6 +6,7 @@ import {
   Popover,
   Typography,
 } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 
 // Internal Dependencies
@@ -26,6 +27,9 @@ const propTypes = {
 const styles = {
   appName: {
     marginLeft: 16,
+  },
+  homeLink: {
+    textDecoration: 'none',
   },
   root: {
     backgroundColor: '#fff',
@@ -80,12 +84,17 @@ const AppNav = ({ classes }) => {
   );
 
   return (
-    <div className={classes.root}>
+    <nav className={classes.root}>
       <Typography
         className={classes.appName}
         variant="h4"
       >
-        Mo GIFs
+        <Link
+          className={classes.homeLink}
+          to="/"
+        >
+          Mo GIFs
+        </Link>
       </Typography>
       {loginElement}
       <Popover
@@ -100,7 +109,7 @@ const AppNav = ({ classes }) => {
           onSignUp={handleSignUp}
         />
       </Popover>
-    </div>
+    </nav>
   );
 };
 

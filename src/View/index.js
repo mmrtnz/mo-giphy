@@ -1,10 +1,9 @@
 // External Dependencies
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import {
-  Button,
   CircularProgress,
   Typography,
 } from '@material-ui/core';
@@ -17,8 +16,7 @@ import { getGifById } from '../context/giphy/selectors';
 import GifImage from '../gif-image';
 
 // Local Dependencies
-import HeartIcon from './heart-icon';
-import HeartOutlinedIcon from './heart-outlined-icon';
+import TagBox from './tag-box';
 
 // Local Variables
 const propTypes = {
@@ -39,15 +37,10 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
   },
-  saveButton: {
-    margin: '0px auto',
-    width: 128,
-  },
 };
 
 // Component Definition
 const View = ({ classes }) => {
-  const [isSaved, setIsSaved] = useState(false);
   const { id } = useParams();
   const { state: giphyState, dispatch } = useContext(GiphyContext);
   const { state: dbState } = useContext(DbContext);
@@ -67,16 +60,6 @@ const View = ({ classes }) => {
     title,
   } = gifData;
 
-  const saveButton = (
-    <Button
-      className={classes.saveButton}
-      onClick={() => setIsSaved(!isSaved)}
-      startIcon={isSaved ? <HeartIcon className={classes.filledHeart} /> : <HeartOutlinedIcon />}
-    >
-      {isSaved ? 'Saved' : 'Save'}
-    </Button>
-  );
-
   const loginText = (
     <Typography
       className={classes.loginText}
@@ -93,7 +76,7 @@ const View = ({ classes }) => {
         image={images.original}
         title={title}
       />
-      {isLoggedIn ? saveButton : loginText}
+      {isLoggedIn ? <TagBox /> : loginText}
     </div>
   );
 };

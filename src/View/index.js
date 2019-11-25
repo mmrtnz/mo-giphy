@@ -76,7 +76,7 @@ const View = ({ classes }) => {
         image={images.original}
         title={title}
       />
-      {isLoggedIn ? <TagBox /> : loginText}
+      {!isLoggedIn ? <TagBox /> : loginText}
     </div>
   );
 };

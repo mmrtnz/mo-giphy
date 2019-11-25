@@ -1,6 +1,7 @@
 // External Dependencies
+import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import {
   Button,
@@ -20,13 +21,25 @@ const propTypes = {
 };
 
 const styles = {
+  addTagContainer: {
+    display: 'inline-block',
+  },
+  hide: {
+    display: 'none',
+  },
   root: {
+    display: 'flex',
     margin: '0px auto',
-    maxWidth: 600,
+    maxWidth: 400,
   },
   saveButton: {
-    margin: '0px auto',
-    width: 128,
+    flex: '1 0 75%',
+    marginRight: 24,
+    maxHeight: 36,
+    maxWidth: 128,
+  },
+  tagContainer: {
+    flexGrow: 1,
   },
 };
 
@@ -34,8 +47,26 @@ const styles = {
 const TagBox = ({ classes }) => {
   const [tagInput, setTagInput] = useState('');
   const [tagInputError, setTagInputError] = useState(null);
-  const [tags, setTags] = useState([]);
-  const [isSaved, setIsSaved] = useState(false);
+  const [tags, setTags] = useState([
+    'this',
+    'is',
+    'how',
+    'we',
+    'do',
+    'it',
+    'du',
+    'dun',
+    'yee',
+    'the',
+    'quick',
+    'bor',
+  ]);
+  const [isSaved, setIsSaved] = useState(true);
+
+  useEffect(() => {
+    console.log('tagbox use effect');
+    return () => { console.log('tagbox cleanup'); };
+  }, []);
 
   const handleAddTag = () => {
     if (tags.includes(tagInput)) {
@@ -59,8 +90,19 @@ const TagBox = ({ classes }) => {
   };
 
   const handleTextChange = (e) => {
-    setTagInput(e.target.value);
+    const newInput = e.target.value;
+    if (newInput.length >= 64) {
+      setTagInputError('Tag is too long');
+      return;
+    }
+    setTagInput(newInput);
     setTagInputError(null);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && tagInput) {
+      handleAddTag();
+    }
   };
 
   return (
@@ -69,31 +111,42 @@ const TagBox = ({ classes }) => {
         className={classes.saveButton}
         onClick={() => setIsSaved(!isSaved)}
         startIcon={isSaved ? <HeartIcon className={classes.filledHeart} /> : <HeartOutlinedIcon />}
+        variant="outlined"
       >
         {isSaved ? 'Saved' : 'Save'}
       </Button>
-      {tags.map(t => (
-        <Chip
-          data-tag={t}
-          key={`tag-${t}`}
-          label={t}
-          onDelete={handleDeleteTag}
-          size="small"
-          variant="outlined"
-        />
-      ))}
-      <TextField
-        error={Boolean(tagInputError)}
-        helperText={tagInputError || 'Tag this gif to find it later'}
-        onChange={handleTextChange}
-        value={tagInput}
-      />
-      <Button
-        disabled={!tagInput || Boolean(tagInputError)}
-        onClick={handleAddTag}
+      <div className={
+        cx(
+          classes.tagContainer,
+          !isSaved && classes.hide,
+        )}
       >
-        Add Tag
-      </Button>
+        {tags.map(t => (
+          <Chip
+            data-tag={t}
+            key={`tag-${t}`}
+            label={t}
+            onDelete={handleDeleteTag}
+            size="small"
+            variant="outlined"
+          />
+        ))}
+        <div className={classes.addTagContainer}>
+          <TextField
+            error={Boolean(tagInputError)}
+            helperText={tagInputError || 'Tag this gif to find it later'}
+            onChange={handleTextChange}
+            onKeyDown={handleKeyDown}
+            value={tagInput}
+          />
+          <Button
+            disabled={!tagInput || Boolean(tagInputError)}
+            onClick={handleAddTag}
+          >
+            Add Tag
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

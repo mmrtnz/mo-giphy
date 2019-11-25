@@ -22,14 +22,18 @@ const handleLogin = (req, res) => {
     res.status(400).send('Invalid username or password');
     return;
   }
-
+  console.log('handleLogin');
   Account.find({
     username,
     password: Base64.encode(password),
   }).exec((err, accounts) => {
     if (accounts.length) {
       // TODO: query for more account info
-      res.json({ username: accounts[0].username }).end();
+      res.json({
+        // eslint-disable-next-line no-underscore-dangle
+        accountId: accounts[0]._id,
+        username: accounts[0].username,
+      }).end();
     } else {
       res.status(401).end();
     }
@@ -67,7 +71,11 @@ const handleSignUp = (req, res) => {
       res.status(403).end();
     } else {
       // TODO: query for more account info
-      res.json({ username: account.username }).end();
+      res.json({
+        // eslint-disable-next-line no-underscore-dangle
+        accountId: account._id,
+        username: account.username,
+      }).end();
     }
   });
 };

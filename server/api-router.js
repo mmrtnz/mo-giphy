@@ -9,6 +9,7 @@ const { ObjectId } = mongoose.Types;
 const {
   Account,
   Gif,
+  Tag,
 } = require('./models');
 
 const router = express.Router();
@@ -92,50 +93,53 @@ const gifFromGiphyData = ({ id, ...giphyData }) => new Gif({
   ...giphyData,
 });
 
-const handleSaveGif = (req, res) => {
+const handleSaveGif = async (req, res) => {
   const { accountid } = req.params;
   const {
     giphyData,
-    // tags,
+    tags,
   } = req.body;
 
-  Account.findById(new ObjectId(accountid))
-    .then((account) => {
-      Gif.find({ giphyId: giphyData.id }).exec((gifErr, gifs) => {
-        if (gifErr) {
-          throw new Error('Error when finding Gif', gifErr);
+  try {
+    // Get account
+    const account = await Account.findById(new ObjectId(accountid));
+
+    // Get gif, add to db if it doesn't exist
+    const gifs = await Gif.find({ giphyId: giphyData.id });
+
+    let gif;
+    if (!gifs.length) {
+      console.log(`Saving new gif - id: ${giphyData.id}`);
+      gif = gifFromGiphyData(giphyData);
+
+      gif.save((error) => {
+        if (error) {
+          throw new Error('Error saving gif to db');
         }
-
-        // Add gif to db if it doesn't exist
-        let gif;
-        if (!gifs.length) {
-          console.log(`Saving new gif - id: ${giphyData.id}`);
-          gif = gifFromGiphyData(giphyData);
-
-          gif.save((error) => {
-            if (error) {
-              throw new Error('Error saving gif to db');
-            }
-          });
-        } else {
-          // eslint-disable-next-line prefer-destructuring
-          gif = gifs[0];
-        }
-
-        // Save gif to account
-        // eslint-disable-next-line no-underscore-dangle
-        account.gifs.push(gif);
-        account.save((error) => {
-          if (error) {
-            throw new Error('Error saving account changes to db');
-          }
-        });
       });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).end();
+    } else {
+      // eslint-disable-next-line prefer-destructuring
+      gif = gifs[0];
+    }
+
+    // Get tags, add them to db if they don't exist
+    const matchingTags = await Tag.find({ description: { $in: tags } });
+
+    console.log('matchingTags', matchingTags);
+    console.log('tags', tags);
+
+    // Save gif to account
+    // eslint-disable-next-line no-underscore-dangle
+    account.gifs.push(gif);
+    account.save((error) => {
+      if (error) {
+        throw new Error('Error saving account changes to db');
+      }
     });
+  } catch (e) {
+    console.log(e);
+    res.status(500).end();
+  }
 
   res.status(200).end();
 };

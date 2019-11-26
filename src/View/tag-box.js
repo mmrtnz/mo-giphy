@@ -1,15 +1,16 @@
 // External Dependencies
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 import {
   Button,
   Chip,
   TextField,
 } from '@material-ui/core';
-
-// Internal Dependencies
 
 // Local Dependencies
 import HeartIcon from './heart-icon';
@@ -18,6 +19,7 @@ import HeartOutlinedIcon from './heart-outlined-icon';
 // Local Variables
 const propTypes = {
   classes: PropTypes.shape({}).isRequired,
+  onSave: PropTypes.func.isRequired,
 };
 
 const styles = {
@@ -44,29 +46,16 @@ const styles = {
 };
 
 // Component Definition
-const TagBox = ({ classes }) => {
+const TagBox = ({ classes, onSave }) => {
   const [tagInput, setTagInput] = useState('');
   const [tagInputError, setTagInputError] = useState(null);
-  const [tags, setTags] = useState([
-    'this',
-    'is',
-    'how',
-    'we',
-    'do',
-    'it',
-    'du',
-    'dun',
-    'yee',
-    'the',
-    'quick',
-    'bor',
-  ]);
-  const [isSaved, setIsSaved] = useState(true);
+  const [tags, setTags] = useState([]);
+  const [isSaved, setIsSaved] = useState(false);
 
-  useEffect(() => {
-    console.log('tagbox use effect');
-    return () => { console.log('tagbox cleanup'); };
-  }, []);
+  // Save changes when leaving page
+  // ERROR: Refers to initial state of isSaved, because effect only fired once. There are potential
+  // work arounds, but the easiest is to revert to a class component.
+  useEffect(() => () => onSave(isSaved, tags), []);
 
   const handleAddTag = () => {
     if (tags.includes(tagInput)) {

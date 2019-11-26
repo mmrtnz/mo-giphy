@@ -1,3 +1,4 @@
+/* eslint-disable */
 // External Dependencies
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
@@ -9,10 +10,11 @@ import {
 } from '@material-ui/core';
 
 // Internal Dependencies
-import { queryGiphyById } from '../context/giphy/actions';
 import { DbContext } from '../context/db';
-import { GiphyContext } from '../context/giphy';
 import { getGifById } from '../context/giphy/selectors';
+import { GiphyContext } from '../context/giphy';
+import { queryGiphyById } from '../context/giphy/actions';
+import { saveAccountGif } from '../context/db/actions';
 import GifImage from '../gif-image';
 
 // Local Dependencies
@@ -43,7 +45,7 @@ const styles = {
 const View = ({ classes }) => {
   const { id } = useParams();
   const { state: giphyState, dispatch } = useContext(GiphyContext);
-  const { state: dbState } = useContext(DbContext);
+  const { state: dbState, dispatch: dbDispatch } = useContext(DbContext);
   const isLoggedIn = Boolean(dbState.apiData);
   const gifData = getGifById(giphyState, id);
 
@@ -69,6 +71,20 @@ const View = ({ classes }) => {
     </Typography>
   );
 
+  const handleSave = (isSaved, tags) => {
+    console.log('hi', gifData);
+    console.log('isSaved', isSaved);
+    // TODO: Handle removing gif from account based on isSaved
+    // if (isSaved) {
+      saveAccountGif(
+        dbDispatch,
+        dbState.apiData.accountId,
+        gifData,
+        tags,
+      );
+    // }
+  };
+
   return (
     <div className={classes.root}>
       <GifImage
@@ -76,7 +92,7 @@ const View = ({ classes }) => {
         image={images.original}
         title={title}
       />
-      {!isLoggedIn ? <TagBox /> : loginText}
+      {isLoggedIn ? <TagBox onSave={handleSave} /> : loginText}
     </div>
   );
 };

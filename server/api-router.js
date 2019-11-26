@@ -3,7 +3,10 @@ const express = require('express');
 const { Base64 } = require('js-base64');
 
 // Internal Dependencies
-const { Account } = require('./models');
+const {
+  Account,
+  Gif,
+} = require('./models');
 
 const router = express.Router();
 
@@ -22,7 +25,7 @@ const handleLogin = (req, res) => {
     res.status(400).send('Invalid username or password');
     return;
   }
-  console.log('handleLogin');
+
   Account.find({
     username,
     password: Base64.encode(password),
@@ -80,7 +83,41 @@ const handleSignUp = (req, res) => {
   });
 };
 
+// Renames id from giphy data to avoid issues
+const gifFromGiphyData = ({ id, ...giphyData }) => new Gif({
+  giphyId: id,
+  ...giphyData,
+});
+
+const handleSaveGif = (req, res) => {
+  const { accountid } = req.params;
+  const {
+    giphyData,
+    // tags,
+  } = req.body;
+  console.log('handleSaveGif', giphyData);
+  // Add gif to db if it doesn't exist
+  Gif.find({ giphyId: giphyData.id }).exec((err, gifs) => {
+    if (!err && !gifs.length) {
+      console.log(`Saving gif - id: ${giphyData.id}`);
+      const gif = gifFromGiphyData(giphyData);
+      gif.save(error =>
+        error && res.status(500).send(`Error saving gif to db: ${err}`),
+      );
+    }
+  });
+
+  Account.find({ id: accountid }).exec((err, accounts) => {
+    if (!accounts) {
+      console.log('account exists!');
+    }
+  });
+
+  res.status(200).end();
+};
+
 router.get('/api/login', handleLogin);
 router.post('/api/signup', handleSignUp);
+router.post('/api/:accountid/gif', handleSaveGif);
 
 module.exports = router;

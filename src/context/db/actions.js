@@ -96,10 +96,37 @@ const saveSignUp = async (dispatch, username, password) => {
   }, errorMessage);
 };
 
-const saveAccountGif = async (dispatch, accountId, gifId, tags) => {
-  const url = `${baseURL}/${accountId}/tags`;
+// Only extracts data to be stored in our DB
+const getMinimumGifData = ({
+  id,
+  images: {
+    // eslint-disable-next-line camelcase
+    fixed_width,
+    original,
+  },
+  title,
+}) => ({
+  id,
+  images: {
+    fixedWidth: {
+      height: fixed_width.height,
+      webp: fixed_width.webp,
+      width: fixed_width.width,
+    },
+    original: {
+      height: original.height,
+      webp: original.webp,
+      width: original.width,
+    },
+  },
+  title,
+});
+
+
+const saveAccountGif = async (dispatch, accountId, gifData, tags) => {
+  const url = `${baseURL}/${accountId}/gif`;
   const body = {
-    gifId,
+    giphyData: getMinimumGifData(gifData),
     tags,
   };
   const errorMessage = 'There was an error saving changes to your gif.';

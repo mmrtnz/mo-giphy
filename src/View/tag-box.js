@@ -2,10 +2,7 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React, { Component } from 'react';
 import {
   Button,
   Chip,
@@ -17,11 +14,6 @@ import HeartIcon from './heart-icon';
 import HeartOutlinedIcon from './heart-outlined-icon';
 
 // Local Variables
-const propTypes = {
-  classes: PropTypes.shape({}).isRequired,
-  onSave: PropTypes.func.isRequired,
-};
-
 const styles = {
   addTagContainer: {
     display: 'inline-block',
@@ -46,28 +38,50 @@ const styles = {
 };
 
 // Component Definition
-const TagBox = ({ classes, onSave }) => {
-  const [tagInput, setTagInput] = useState('');
-  const [tagInputError, setTagInputError] = useState(null);
-  const [tags, setTags] = useState([]);
-  const [isSaved, setIsSaved] = useState(false);
-
-  // Save changes when leaving page
-  // ERROR: Refers to initial state of isSaved, because effect only fired once. There are potential
-  // work arounds, but the easiest is to revert to a class component.
-  useEffect(() => () => onSave(isSaved, tags), []);
-
-  const handleAddTag = () => {
-    if (tags.includes(tagInput)) {
-      setTagInputError('Tag already exist!');
-      return;
-    }
-    tags.push(tagInput);
-    setTags(tags);
-    setTagInput('');
+class TagBox extends Component {
+  static propTypes = {
+    classes: PropTypes.shape({}).isRequired,
+    onSave: PropTypes.func.isRequired,
   };
 
-  const handleDeleteTag = (e) => {
+  constructor() {
+    super();
+    this.state = {
+      isSaved: false,
+      tags: [],
+      tagInput: '',
+      tagInputError: '',
+    };
+  }
+
+  componentWillUnmount() {
+    const {
+      isSaved,
+      tags,
+    } = this.state;
+    this.props.onSave(isSaved, tags);
+  }
+
+  handleAddTag = () => {
+    const {
+      tags,
+      tagInput,
+    } = this.state;
+
+    if (tags.includes(tagInput)) {
+      this.setState({ tagInputError: 'Tag already exist!' });
+      return;
+    }
+
+    tags.push(tagInput);
+    this.setState({
+      tags,
+      tagInput: '',
+    });
+  };
+
+  handleDeleteTag = (e) => {
+    const { tags } = this.state;
     // Determine which chip was clicked. MUI attaches the event listener for deleting chips on their
     // svg icons but only propagates props to the root component, so we need to move up one level to
     // access our value attribute.
@@ -75,71 +89,87 @@ const TagBox = ({ classes, onSave }) => {
     const idx = tags.indexOf(tagName);
     const newTags = tags.slice();
     newTags.splice(idx, 1);
-    setTags(newTags);
+    this.setState({ tags: newTags });
   };
 
-  const handleTextChange = (e) => {
+  handleTextChange = (e) => {
     const newInput = e.target.value;
     if (newInput.length >= 64) {
-      setTagInputError('Tag is too long');
+      this.setState({ tagInputError: 'Tag is too long' });
       return;
     }
-    setTagInput(newInput);
-    setTagInputError(null);
+    this.setState({
+      tagInput: newInput,
+      tagInputError: null,
+    });
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && tagInput) {
-      handleAddTag();
+  handleKeyDown = (e) => {
+    if (e.key === 'Enter' && this.state.tagInput) {
+      this.handleAddTag();
     }
   };
 
-  return (
-    <div className={classes.root}>
-      <Button
-        className={classes.saveButton}
-        onClick={() => setIsSaved(!isSaved)}
-        startIcon={isSaved ? <HeartIcon className={classes.filledHeart} /> : <HeartOutlinedIcon />}
-        variant="outlined"
-      >
-        {isSaved ? 'Saved' : 'Save'}
-      </Button>
-      <div className={
-        cx(
-          classes.tagContainer,
-          !isSaved && classes.hide,
-        )}
-      >
-        {tags.map(t => (
-          <Chip
-            data-tag={t}
-            key={`tag-${t}`}
-            label={t}
-            onDelete={handleDeleteTag}
-            size="small"
-            variant="outlined"
-          />
-        ))}
-        <div className={classes.addTagContainer}>
-          <TextField
-            error={Boolean(tagInputError)}
-            helperText={tagInputError || 'Tag this gif to find it later'}
-            onChange={handleTextChange}
-            onKeyDown={handleKeyDown}
-            value={tagInput}
-          />
-          <Button
-            disabled={!tagInput || Boolean(tagInputError)}
-            onClick={handleAddTag}
-          >
-            Add Tag
-          </Button>
+  toggleSave = () => this.setState({
+    isSaved: !this.state.isSaved,
+  });
+
+  render() {
+    const {
+      classes,
+    } = this.props;
+    const {
+      isSaved,
+      tags,
+      tagInput,
+      tagInputError,
+    } = this.state;
+
+    return (
+      <div className={classes.root}>
+        <Button
+          className={classes.saveButton}
+          onClick={this.toggleSave}
+          startIcon={isSaved ? <HeartIcon className={classes.filledHeart} /> : <HeartOutlinedIcon />}
+          variant="outlined"
+        >
+          {isSaved ? 'Saved' : 'Save'}
+        </Button>
+        <div className={
+          cx(
+            classes.tagContainer,
+            !isSaved && classes.hide,
+          )}
+        >
+          {tags.map(t => (
+            <Chip
+              data-tag={t}
+              key={`tag-${t}`}
+              label={t}
+              onDelete={this.handleDeleteTag}
+              size="small"
+              variant="outlined"
+            />
+          ))}
+          <div className={classes.addTagContainer}>
+            <TextField
+              error={Boolean(tagInputError)}
+              helperText={tagInputError || 'Tag this gif to find it later'}
+              onChange={this.handleTextChange}
+              onKeyDown={this.handleKeyDown}
+              value={tagInput}
+            />
+            <Button
+              disabled={!tagInput || Boolean(tagInputError)}
+              onClick={this.handleAddTag}
+            >
+              Add Tag
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-TagBox.propTypes = propTypes;
+    );
+  }
+}
 
 export default withStyles(styles)(TagBox);

@@ -4,6 +4,7 @@ require('dotenv').config();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require('express');
+const morgan = require('morgan');
 const mongoose = require('mongoose');
 
 // Internal Dependencies
@@ -15,6 +16,7 @@ const port = process.env.DB_PORT || 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(morgan('tiny'));
 
 // Connect to database
 const uri = process.env.DB_URI;

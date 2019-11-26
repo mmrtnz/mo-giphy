@@ -124,9 +124,22 @@ const handleSaveGif = async (req, res) => {
 
     // Get tags, add them to db if they don't exist
     const matchingTags = await Tag.find({ description: { $in: tags } });
+    const matchingTagNames = matchingTags.map(t => t.description);
+    const newTags = tags.filter(t => !matchingTagNames.includes(t));
+
+    newTags.forEach((tagName) => {
+      console.log(`Saving new tag - ${tagName}`);
+      new Tag({ description: tagName })
+        .save((error) => {
+          if (error) {
+            throw new Error(`Error saving tag ${tagName} to db`);
+          }
+        });
+    });
 
     console.log('matchingTags', matchingTags);
     console.log('tags', tags);
+    console.log('newTags', newTags);
 
     // Save gif to account
     // eslint-disable-next-line no-underscore-dangle

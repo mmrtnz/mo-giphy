@@ -1,6 +1,9 @@
 // External Dependencies
 const express = require('express');
+const mongoose = require('mongoose');
 const { Base64 } = require('js-base64');
+
+const { ObjectId } = mongoose.Types;
 
 // Internal Dependencies
 const {
@@ -95,23 +98,44 @@ const handleSaveGif = (req, res) => {
     giphyData,
     // tags,
   } = req.body;
-  console.log('handleSaveGif', giphyData);
-  // Add gif to db if it doesn't exist
-  Gif.find({ giphyId: giphyData.id }).exec((err, gifs) => {
-    if (!err && !gifs.length) {
-      console.log(`Saving gif - id: ${giphyData.id}`);
-      const gif = gifFromGiphyData(giphyData);
-      gif.save(error =>
-        error && res.status(500).send(`Error saving gif to db: ${err}`),
-      );
-    }
-  });
 
-  Account.find({ id: accountid }).exec((err, accounts) => {
-    if (!accounts) {
-      console.log('account exists!');
-    }
-  });
+  Account.findById(new ObjectId(accountid))
+    .then((account) => {
+      Gif.find({ giphyId: giphyData.id }).exec((gifErr, gifs) => {
+        if (gifErr) {
+          throw new Error('Error when finding Gif', gifErr);
+        }
+
+        // Add gif to db if it doesn't exist
+        let gif;
+        if (!gifs.length) {
+          console.log(`Saving new gif - id: ${giphyData.id}`);
+          gif = gifFromGiphyData(giphyData);
+
+          gif.save((error) => {
+            if (error) {
+              throw new Error('Error saving gif to db');
+            }
+          });
+        } else {
+          // eslint-disable-next-line prefer-destructuring
+          gif = gifs[0];
+        }
+
+        // Save gif to account
+        // eslint-disable-next-line no-underscore-dangle
+        account.gifs.push(gif);
+        account.save((error) => {
+          if (error) {
+            throw new Error('Error saving account changes to db');
+          }
+        });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).end();
+    });
 
   res.status(200).end();
 };

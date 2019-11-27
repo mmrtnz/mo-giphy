@@ -8,6 +8,7 @@ const { ObjectId } = mongoose.Types;
 // Internal Dependencies
 const {
   Account,
+  AccountGifTag,
   Gif,
   Tag,
 } = require('./models');
@@ -100,6 +101,13 @@ const handleSaveGif = async (req, res) => {
     tags,
   } = req.body;
 
+  const handleError = errorMessage =>
+    (error) => {
+      if (error) {
+        throw new Error(errorMessage);
+      }
+    };
+
   try {
     // Get account
     const account = await Account.findById(new ObjectId(accountid));
@@ -123,32 +131,39 @@ const handleSaveGif = async (req, res) => {
     }
 
     // Get tags, add them to db if they don't exist
+    let tagModels = [];
     const matchingTags = await Tag.find({ description: { $in: tags } });
     const matchingTagNames = matchingTags.map(t => t.description);
     const newTags = tags.filter(t => !matchingTagNames.includes(t));
 
     newTags.forEach((tagName) => {
       console.log(`Saving new tag - ${tagName}`);
-      new Tag({ description: tagName })
-        .save((error) => {
-          if (error) {
-            throw new Error(`Error saving tag ${tagName} to db`);
-          }
-        });
+      const currentTagModel = new Tag({ description: tagName });
+
+      tagModels.push(currentTagModel);
+      currentTagModel.save(handleError(`Error saving tag ${tagName} to db`));
     });
+
+    tagModels = tagModels.concat(matchingTags);
 
     console.log('matchingTags', matchingTags);
     console.log('tags', tags);
     console.log('newTags', newTags);
 
+    // Update/create link between tags, gif, and account
+    /* eslint-disable no-underscore-dangle */
+    const accountGifTags = new AccountGifTag({
+      accountId: account._id,
+      gifId: gif._id,
+      tagIds: tagModels,
+    });
+    /* eslint-enable no-underscore-dangle */
+    accountGifTags.save(handleError('Error saving AccountGifTag'));
+
     // Save gif to account
     // eslint-disable-next-line no-underscore-dangle
     account.gifs.push(gif);
-    account.save((error) => {
-      if (error) {
-        throw new Error('Error saving account changes to db');
-      }
-    });
+    account.save(handleError('Error saving account changes to db'));
   } catch (e) {
     console.log(e);
     res.status(500).end();

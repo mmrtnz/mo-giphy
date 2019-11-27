@@ -43,7 +43,6 @@ const Banner = ({ classes }) => (
   >
     {bannerGifData.map(g => (
       <GifImage
-        fullWidth={false}
         image={{
           height: 36,
           webp: g.webp,

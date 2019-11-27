@@ -19,7 +19,10 @@ const GiphyTile = ({
 }) => (
   <GridListTile {...other} cols={1}>
     <Link to={`/view/${id}`}>
-      <GifImage {...other} />
+      <GifImage
+        {...other}
+        style={{ width: '100%' }}
+      />
     </Link>
   </GridListTile>
 );

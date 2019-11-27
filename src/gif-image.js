@@ -4,7 +4,6 @@ import React from 'react';
 
 // Local Variables
 const propTypes = {
-  fullWidth: PropTypes.bool,
   image: PropTypes.shape({
     height: PropTypes.string.isRequired,
     webp: PropTypes.string.isRequired,
@@ -14,13 +13,11 @@ const propTypes = {
 };
 
 const defaultProps = {
-  fullWidth: true,
   title: 'gif-image',
 };
 
 // Component Definition
 const GifImage = ({
-  fullWidth,
   image: {
     height,
     webp,
@@ -34,7 +31,6 @@ const GifImage = ({
     alt={title}
     height={`${height}px`}
     src={webp}
-    style={fullWidth ? { width: '100%' } : null}
     width={`${width}px`}
   />
 );

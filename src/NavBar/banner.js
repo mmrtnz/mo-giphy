@@ -44,10 +44,11 @@ const Banner = ({ classes }) => (
     {bannerGifData.map(g => (
       <GifImage
         image={{
-          height: 36,
+          height: '36',
           webp: g.webp,
-          width: 36,
+          width: '36',
         }}
+        key={`banner-letter-${g.title}`}
         title={g.title}
       />
     ))}

@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 
 // Internal Dependencies
-import AppNav from './app-nav';
+import NavBar from './NavBar';
 
 // Local Dependencies
 import Search from './Search';
@@ -16,7 +16,7 @@ import View from './View';
 // Component Definition
 const Router = () => (
   <BrowserRouter>
-    <AppNav />
+    <NavBar />
     <div style={{ paddingTop: 36 }}>
       <Switch>
         <Route path="/view/:id">

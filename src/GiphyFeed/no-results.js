@@ -34,7 +34,10 @@ const noResultsGifData = {
 const NoResults = ({ classes }) => (
   <div className={classes.root}>
     <Typography variant="h1">No Results</Typography>
-    <GifImage {...noResultsGifData} />
+    <GifImage
+      fullWidth={false}
+      {...noResultsGifData}
+    />
   </div>
 );
 

@@ -5,14 +5,14 @@ import {
   Button,
   Typography,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 
 // Internal Dependencies
-import { DbContext } from './context/db';
+import { DbContext } from '../context/db';
+import DialogLogin from '../DialogLogin';
 
 // Local Dependencies
-import DialogLogin from './DialogLogin';
+import Banner from './banner';
 
 // Local Variables
 const propTypes = {
@@ -20,12 +20,6 @@ const propTypes = {
 };
 
 const styles = {
-  appName: {
-    marginLeft: 16,
-  },
-  homeLink: {
-    textDecoration: 'none',
-  },
   root: {
     backgroundColor: '#fff',
     borderBottom: 'solid 1px #ddd',
@@ -36,13 +30,30 @@ const styles = {
     width: '100%',
     zIndex: 2,
   },
-  welcomeText: {
+  tabsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginRight: 16,
+  },
+  tabText: {
     lineHeight: 2.75,
+    marginLeft: 48,
   },
 };
 
+/* eslint-disable react/prop-types */
+const TabElement = ({ className, children }) => (
+  <Typography
+    className={className}
+    variant="subtitle1"
+  >
+    {children}
+  </Typography>
+);
+/* eslint-enable react/prop-types */
+
 // Component Definition
-const AppNav = ({ classes }) => {
+const NavBar = ({ classes }) => {
   const { apiData } = useContext(DbContext).state;
   const [isOpen, setIsOpen] = useState(false);
 
@@ -50,34 +61,26 @@ const AppNav = ({ classes }) => {
 
   const handleClose = () => setIsOpen(false);
 
-  // If we have the username saved, we know we've logged in
-  const loginElement = accountUsername ? (
-    <Typography
-      className={classes.welcomeText}
-      variant="subtitle1"
-    >
-      Hello {accountUsername}
-    </Typography>
-  ) : (
-    <Button onClick={() => setIsOpen(true)}>
+  const loggedInActions = (
+    <div className={classes.tabsContainer}>
+      {/* <TabElement className={classes.tabText}>MY GIFS</TabElement> */}
+      <TabElement className={classes.tabText}>Hello {accountUsername}</TabElement>
+    </div>
+  );
+
+  const loginElement = (
+    <Button className={classes.tabsContainer} onClick={() => setIsOpen(true)}>
       Login / Sign Up
     </Button>
   );
 
+  // If we have the username saved, we know we've logged in
+  const actionElements = accountUsername ? loggedInActions : loginElement;
+
   return (
     <nav className={classes.root}>
-      <Typography
-        className={classes.appName}
-        variant="h4"
-      >
-        <Link
-          className={classes.homeLink}
-          to="/"
-        >
-          Mo GIFs
-        </Link>
-      </Typography>
-      {loginElement}
+      <Banner />
+      {actionElements}
       <DialogLogin
         fullWidth
         maxWidth="xs"
@@ -89,6 +92,6 @@ const AppNav = ({ classes }) => {
   );
 };
 
-AppNav.propTypes = propTypes;
+NavBar.propTypes = propTypes;
 
-export default withStyles(styles)(AppNav);
+export default withStyles(styles)(NavBar);

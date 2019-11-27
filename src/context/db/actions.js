@@ -124,7 +124,7 @@ const getMinimumGifData = ({
 
 
 const saveAccountGif = async (dispatch, accountId, gifData, tags) => {
-  const url = `${baseURL}/${accountId}/gif`;
+  const url = `${baseURL}/account/${accountId}/gif`;
   const body = {
     giphyData: getMinimumGifData(gifData),
     tags,

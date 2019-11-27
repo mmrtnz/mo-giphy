@@ -1,4 +1,3 @@
-
 // External Dependencies
 const { Base64 } = require('js-base64');
 
@@ -27,11 +26,12 @@ exports.login = (req, res) => {
     password: Base64.encode(password),
   }).exec((err, accounts) => {
     if (accounts.length) {
-      // TODO: query for more account info
+      const account = accounts[0];
       res.json({
         // eslint-disable-next-line no-underscore-dangle
-        accountId: accounts[0]._id,
-        username: accounts[0].username,
+        accountId: account._id,
+        username: account.username,
+        gifs: account.gifs,
       }).end();
     } else {
       res.status(401).end();

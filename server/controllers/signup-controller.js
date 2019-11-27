@@ -40,6 +40,7 @@ exports.postSignUp = (req, res) => {
         // eslint-disable-next-line no-underscore-dangle
         accountId: account._id,
         username: account.username,
+        gifs: [],
       }).end();
     }
   });

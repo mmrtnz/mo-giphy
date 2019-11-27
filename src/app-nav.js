@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import {
   Button,
-  Popover,
   Typography,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
@@ -11,13 +10,9 @@ import { withStyles } from '@material-ui/core/styles';
 
 // Internal Dependencies
 import { DbContext } from './context/db';
-import {
-  queryDbLogin,
-  saveSignUp,
-} from './context/db/actions';
 
 // Local Dependencies
-import LoginForm from './login-form';
+import DialogLogin from './DialogLogin';
 
 // Local Variables
 const propTypes = {
@@ -46,28 +41,12 @@ const styles = {
   },
 };
 
-const anchorOrigin = {
-  horizontal: 'right',
-  vertical: 'top',
-};
-
-const transformOrigin = {
-  horizontal: 'left',
-  vertical: 'top',
-};
-
 // Component Definition
 const AppNav = ({ classes }) => {
-  const { state, dispatch } = useContext(DbContext);
-  const { apiData } = state;
+  const { apiData } = useContext(DbContext).state;
+  const [isOpen, setIsOpen] = useState(false);
+
   const accountUsername = apiData ? apiData.username : null;
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleLogin = (user, pass) =>
-    queryDbLogin(dispatch, user, pass);
-
-  const handleSignUp = (user, pass) =>
-    saveSignUp(dispatch, user, pass);
 
   // If we have the username saved, we know we've logged in
   const loginElement = accountUsername ? (
@@ -78,7 +57,7 @@ const AppNav = ({ classes }) => {
       Hello {accountUsername}
     </Typography>
   ) : (
-    <Button onClick={e => setAnchorEl(e.currentTarget)}>
+    <Button onClick={() => setIsOpen(true)}>
       Login / Sign Up
     </Button>
   );
@@ -97,18 +76,12 @@ const AppNav = ({ classes }) => {
         </Link>
       </Typography>
       {loginElement}
-      <Popover
-        anchorEl={anchorEl}
-        anchorOrigin={anchorOrigin}
-        open={Boolean(anchorEl) && !accountUsername}
-        onClose={() => setAnchorEl(null)}
-        transformOrigin={transformOrigin}
-      >
-        <LoginForm
-          onLogin={handleLogin}
-          onSignUp={handleSignUp}
-        />
-      </Popover>
+      <DialogLogin
+        fullWidth
+        maxWidth="xs"
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
     </nav>
   );
 };

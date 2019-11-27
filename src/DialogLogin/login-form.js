@@ -1,24 +1,27 @@
 // External Dependencies
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
+import React, { Fragment, useContext, useState } from 'react';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import EyeIcon from '@material-ui/icons/RemoveRedEye';
 import {
-  Button,
-  CircularProgress,
   TextField,
   Typography,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
 // Local Dependencies
-import { DbContext } from './context/db';
+import { DbContext } from '../context/db';
 
 // Local Variables
 const propTypes = {
   classes: PropTypes.shape({}).isRequired,
-  onLogin: PropTypes.func.isRequired,
-  onSignUp: PropTypes.func.isRequired,
+  form: PropTypes.shape({
+    password: PropTypes.string.isRequired,
+    passwordError: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+    usernameError: PropTypes.string.isRequired,
+  }).isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 const styles = {
@@ -26,23 +29,17 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-around',
   },
-  button: {
-    marginTop: 8,
-  },
   error: {
-    backgroundColor: '#ef9a9a', // red200
+    color: '#f44336', // red500
     borderRadius: 4,
-    color: 'rgba(0,0,0,.85)',
     display: 'flex',
-    margin: '8px 0px',
+    margin: '0px 0px 8px 0px',
   },
   errorIcon: {
-    margin: 'auto 8px',
+    margin: 'auto 8px auto 0px',
   },
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    margin: '0px 16px 16px 16px',
+  passwordField: {
+    marginTop: 16,
   },
   showPasswordIcon: {
     position: 'absolute',
@@ -53,63 +50,17 @@ const styles = {
 // Component Definition
 const LoginForm = ({
   classes,
-  onLogin,
-  onSignUp,
+  form,
+  onChange,
 }) => {
-  const { state } = useContext(DbContext);
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({
-    password: '',
-    username: '',
-  });
-
+  const { state } = useContext(DbContext);
   const {
     password,
     passwordError,
     username,
     usernameError,
   } = form;
-
-  const handleChange = e => setForm({
-    ...form,
-    [e.target.name]: e.target.value,
-    [`${e.target.name}Error`]: false,
-  });
-
-  const validateForm = (callback) => {
-    if (username && password) {
-      callback(username, password);
-    } else {
-      setForm({
-        ...form,
-        passwordError: !password && 'Password is required',
-        usernameError: !username && 'Username is required',
-      });
-    }
-  };
-
-  const validateLogin = () => validateForm(onLogin);
-  const validateSignUp = () => validateForm(onSignUp);
-
-  const actionElement = state.isGetting
-    ? <CircularProgress />
-    : (
-      <div className={classes.actionContainer}>
-        <Button
-          className={classes.button}
-          onClick={validateLogin}
-        >
-          Login
-        </Button>
-        <Button
-          className={classes.button}
-          onClick={validateSignUp}
-          variant="outlined"
-        >
-          Sign Up
-        </Button>
-      </div>
-    );
 
   const errorElement = state.error
     ? (
@@ -120,24 +71,26 @@ const LoginForm = ({
     ) : null;
 
   return (
-    <div className={classes.root}>
+    <Fragment>
       {errorElement}
       <TextField
         error={Boolean(usernameError)}
+        fullWidth
         helperText={usernameError}
         label="Username"
         name="username"
-        onChange={handleChange}
+        onChange={onChange}
         required
         value={username}
       />
-      <div>
+      <div className={classes.passwordField}>
         <TextField
           error={Boolean(passwordError)}
+          fullWidth
           helperText={passwordError}
           label="Password"
           name="password"
-          onChange={handleChange}
+          onChange={onChange}
           required
           type={showPassword ? 'text' : 'password'}
           value={password}
@@ -148,8 +101,7 @@ const LoginForm = ({
           onMouseLeave={() => setShowPassword(false)}
         />
       </div>
-      {actionElement}
-    </div>
+    </Fragment>
   );
 };
 

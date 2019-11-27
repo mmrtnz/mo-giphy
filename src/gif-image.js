@@ -29,9 +29,10 @@ const GifImage = ({
   <img
     {...other}
     alt={title}
-    height={height}
+    height={`${height}px`}
     src={webp}
-    width={width}
+    style={{ width: '100%' }}
+    width={`${width}px`}
   />
 );
 

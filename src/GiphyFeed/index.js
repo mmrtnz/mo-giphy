@@ -6,6 +6,7 @@ import { GridList } from '@material-ui/core';
 
 // Internal Dependencies
 import { GiphyContext } from '../context/giphy';
+import useBreakpoint, { BREAKPOINTS } from '../use-breakpoint';
 
 // Local Dependencies
 import GiphyTile from './giphy-tile';
@@ -16,20 +17,29 @@ const propTypes = {
   classes: PropTypes.shape({}).isRequired,
 };
 
-const styles = {
+const styles = theme => ({
   gridList: {
   },
   root: {
+    margin: '0px auto',
     maxHeight: 800,
-    // width: 600,
+    [theme.breakpoints.down('xs')]: {
+      width: 200,
+    },
+    [theme.breakpoints.up('xs')]: {
+      width: 600,
+    },
   },
-};
+});
 
 // Component Definition
 const GiphyFeed = ({ classes }) => {
   const { state } = useContext(GiphyContext);
 
   const giphyApiData = state.feed.apiData;
+
+  const breakpoint = useBreakpoint();
+  const numColumns = breakpoint === BREAKPOINTS.XS ? 2 : 3;
 
   // Initial state
   if (!giphyApiData) {
@@ -58,7 +68,7 @@ const GiphyFeed = ({ classes }) => {
     <div className={classes.root}>
       <GridList
         className={classes.gridList}
-        cols={3}
+        cols={numColumns}
       >
         {gifElements}
       </GridList>

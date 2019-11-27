@@ -17,7 +17,7 @@ const GiphyTile = ({
   id,
   ...other
 }) => (
-  <GridListTile {...other} cols={2}>
+  <GridListTile {...other} cols={1}>
     <Link to={`/view/${id}`}>
       <GifImage {...other} />
     </Link>

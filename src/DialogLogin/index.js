@@ -96,7 +96,7 @@ const DialogLogin = ({ onSuccess, ...props }) => {
         />
       </DialogContent>
       <DialogActions>
-        {state.isGetting ? <CircularProgress /> : dialogActionElements}
+        {state.isPosting ? <CircularProgress /> : dialogActionElements}
       </DialogActions>
     </Dialog>
   );

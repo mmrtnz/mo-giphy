@@ -42,7 +42,7 @@ const queryDbLogin = async (dispatch, username, password, onSuccess = null) => {
     Authorization: `Basic ${Base64.encode(credentials)}`,
   };
 
-  dispatch({ type: DB_GET_REQUEST });
+  dispatch({ type: DB_POST_REQUEST });
 
   try {
     const data = await fetch(url, { headers });

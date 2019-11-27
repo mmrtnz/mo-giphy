@@ -48,6 +48,8 @@ const AppNav = ({ classes }) => {
 
   const accountUsername = apiData ? apiData.username : null;
 
+  const handleClose = () => setIsOpen(false);
+
   // If we have the username saved, we know we've logged in
   const loginElement = accountUsername ? (
     <Typography
@@ -80,7 +82,8 @@ const AppNav = ({ classes }) => {
         fullWidth
         maxWidth="xs"
         open={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={handleClose}
+        onSuccess={handleClose}
       />
     </nav>
   );

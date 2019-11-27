@@ -35,7 +35,7 @@ const postDb = async (dispatch, url, body, onData, errorMessage) => {
   }
 };
 
-const queryDbLogin = async (dispatch, username, password) => {
+const queryDbLogin = async (dispatch, username, password, onSuccess = null) => {
   const url = `${baseURL}/login`;
   const credentials = `${username}:${password}`;
   const headers = {
@@ -61,6 +61,10 @@ const queryDbLogin = async (dispatch, username, password) => {
       type: DB_POST_SUCCESS,
       payload: dataJSON,
     });
+
+    if (onSuccess) {
+      onSuccess();
+    }
   } catch (e) {
     console.log('Unxpected error when logging in: ', e);
     dispatch({
@@ -70,7 +74,7 @@ const queryDbLogin = async (dispatch, username, password) => {
   }
 };
 
-const saveSignUp = async (dispatch, username, password) => {
+const saveSignUp = async (dispatch, username, password, onSuccess = null) => {
   const url = `${baseURL}/signup`;
   const body = {
     username: Base64.encode(username),
@@ -93,6 +97,10 @@ const saveSignUp = async (dispatch, username, password) => {
       type: DB_GET_SUCCESS,
       payload: dataJSON,
     });
+
+    if (onSuccess) {
+      onSuccess();
+    }
   }, errorMessage);
 };
 

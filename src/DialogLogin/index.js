@@ -1,4 +1,5 @@
 // External Dependencies
+import PropTypes from 'prop-types';
 import React, {
   useContext,
   useState,
@@ -22,8 +23,13 @@ import {
 // Local Dependencies
 import LoginForm from './login-form';
 
+// Local Variables
+const propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+};
+
 // Component Definition
-const DialogLogin = (props) => {
+const DialogLogin = ({ onSuccess, ...props }) => {
   const { dispatch, state } = useContext(DbContext);
   const [form, setForm] = useState({
     password: 'test1234',
@@ -33,10 +39,10 @@ const DialogLogin = (props) => {
   });
 
   const handleLogin = (user, pass) =>
-    queryDbLogin(dispatch, user, pass);
+    queryDbLogin(dispatch, user, pass, onSuccess);
 
   const handleSignUp = (user, pass) =>
-    saveSignUp(dispatch, user, pass);
+    saveSignUp(dispatch, user, pass, onSuccess);
 
   const handleFormChange = e => setForm({
     ...form,
@@ -95,5 +101,7 @@ const DialogLogin = (props) => {
     </Dialog>
   );
 };
+
+DialogLogin.propTypes = propTypes;
 
 export default DialogLogin;

@@ -72,17 +72,14 @@ const View = ({ classes }) => {
   );
 
   const handleSave = (isSaved, tags) => {
-    console.log('hi', gifData);
-    console.log('isSaved', isSaved);
-    // TODO: Handle removing gif from account based on isSaved
-    // if (isSaved) {
+    if (isSaved) {
       saveAccountGif(
         dbDispatch,
         dbState.apiData.accountId,
         gifData,
         tags,
       );
-    // }
+    }
   };
 
   return (

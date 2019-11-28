@@ -133,11 +133,9 @@ exports.postTagsToAccount = async (req, res) => {
 
     accountGifTags.save(handleError('Error saving AccountGifTag'));
 };
-
+*/
 exports.getAccount = async (req, res) => {
   const { accountid } = req.params;
   const account = await Account.findById(accountid);
-  console.log('account', account);
   res.json(account).end();
 };
-*/

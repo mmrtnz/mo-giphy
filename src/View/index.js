@@ -17,6 +17,7 @@ import { GiphyContext } from '../context/giphy';
 import { queryGiphyById } from '../context/giphy/actions';
 import {
   deleteAccountGif,
+  postTags,
   saveAccountGif,
 } from '../context/db/actions';
 
@@ -69,19 +70,18 @@ const View = ({ classes }) => {
     title,
   } = gifData;
 
+  const accountId = dbState.apiData ? dbState.apiData._id : null;
+
+  const handleUpdateTags = (tags) => {
+    postTags(dbDispatch, accountId, gifData.id, tags);
+  };
+
   const handleSave = () => {
-    saveAccountGif(
-      dbDispatch,
-      dbState.apiData._id,
-      gifData,
-    );
+    saveAccountGif(dbDispatch, accountId, gifData);
   };
 
   const handleUnsave = () => {
-    deleteAccountGif(
-      dbState.apiData._id,
-      gifData.id,
-    );
+    deleteAccountGif(accountId, gifData.id);
   };
 
   const loginText = (
@@ -100,7 +100,7 @@ const View = ({ classes }) => {
         onSave={handleSave}
         onUnsave={handleUnsave}
       />
-      <TagBox />
+      <TagBox onTagChange={handleUpdateTags} />
     </div>
   );
 

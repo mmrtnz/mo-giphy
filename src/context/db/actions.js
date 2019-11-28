@@ -98,7 +98,6 @@ const deleteAccountGif = async (accountId, gifId) => {
 };
 
 const getAccount = async (dispatch, accountId) => {
-  console.log('hellooooo');
   const endpoint = `/account/${accountId}`;
   const errorMessagesByCode = {
     500: 'There was a getting your account data. Please try again later.',
@@ -107,9 +106,23 @@ const getAccount = async (dispatch, accountId) => {
   getDb(dispatch, endpoint, {}, null, errorMessagesByCode);
 };
 
+const postTags = async (dispatch, accountId, gifId, tags) => {
+  const endpoint = `/account/${accountId}/tags`;
+  const body = {
+    giphyId: gifId,
+    tags,
+  };
+  const errorMessagesByCode = {
+    500: 'There was an error updating tags for this gif.',
+  };
+
+  postDb(dispatch, endpoint, body, null, errorMessagesByCode);
+};
+
 export {
   deleteAccountGif,
   getAccount,
+  postTags,
   queryDbLogin,
   saveSignUp,
   saveAccountGif,

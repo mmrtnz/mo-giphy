@@ -20,10 +20,14 @@ const styles = {
 
 const propTypes = {
   classes: PropTypes.shape({}).isRequired,
+  onTagChange: PropTypes.func.isRequired,
 };
 
 // Component Definition
-const TagBox = ({ classes }) => {
+const TagBox = ({
+  classes,
+  onTagChange,
+}) => {
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
   const [tagInputError, setTagInputError] = useState('');
@@ -35,10 +39,10 @@ const TagBox = ({ classes }) => {
     }
 
     tags.push(tagInput);
-    this.setState({
-      tags,
-      tagInput: '',
-    });
+    setTags(tags);
+    setTagInput('');
+    setTagInputError('');
+    onTagChange(tags);
   };
 
   const handleDeleteTag = (e) => {
@@ -50,6 +54,7 @@ const TagBox = ({ classes }) => {
     const newTags = tags.slice();
     newTags.splice(idx, 1);
     setTags(newTags);
+    onTagChange(newTags);
   };
 
   const handleTextChange = (e) => {

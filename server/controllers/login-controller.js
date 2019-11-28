@@ -26,14 +26,7 @@ exports.login = (req, res) => {
     password: Base64.encode(password),
   }).exec((err, accounts) => {
     if (accounts.length) {
-      const account = accounts[0];
-      res.json({
-        // eslint-disable-next-line no-underscore-dangle
-        accountId: account._id,
-        username: account.username,
-        gifs: account.gifs,
-        giphyIds: account.giphyIds,
-      }).end();
+      res.json(accounts[0]).end();
     } else {
       res.status(401).end();
     }

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 // External Dependencies
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
@@ -51,6 +52,7 @@ const View = ({ classes }) => {
   const isLoggedIn = Boolean(dbState.apiData);
   const gifData = getGifById(giphyState, id);
 
+  console.log('dbState', dbState);
   if (!gifData) {
     // Call the API for specific gif if we haven't already
     if (!giphyState.single.isGetting) {
@@ -67,7 +69,7 @@ const View = ({ classes }) => {
   const handleSave = (tags) => {
     saveAccountGif(
       dbDispatch,
-      dbState.apiData.accountId,
+      dbState.apiData._id,
       gifData,
       tags,
     );
@@ -75,7 +77,7 @@ const View = ({ classes }) => {
 
   const handleUnsave = () => {
     deleteAccountGif(
-      dbState.apiData.accountId,
+      dbState.apiData._id,
       gifData.id,
     );
   };

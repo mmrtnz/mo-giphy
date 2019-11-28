@@ -32,6 +32,7 @@ exports.login = (req, res) => {
         accountId: account._id,
         username: account.username,
         gifs: account.gifs,
+        giphyIds: account.giphyIds,
       }).end();
     } else {
       res.status(401).end();

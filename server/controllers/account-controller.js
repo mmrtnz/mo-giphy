@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable */
+
 // External Dependencies
 const mongoose = require('mongoose');
 
@@ -63,6 +63,43 @@ exports.postGifToAccount = async (req, res) => {
     res.status(500).end();
   }
 };
+
+exports.deleteGifFromAccount = async (req, res) => {
+  const {
+    accountid,
+    gifid,
+  } = req.params;
+
+  try {
+    // Get account
+    const account = await Account.findById(new ObjectId(accountid));
+
+    // Get gif
+    const gifs = await Gif.find({ giphyId: gifid });
+
+    if (!gifs.length) {
+      res.status(500).send('Gif doesn\'t exist in DB');
+    }
+
+    // eslint-disable-next-line prefer-destructuring
+    const gif = gifs[0];
+
+    // Remove gif from account
+    const accountGifIdx = account.gifs.indexOf(gif._id);
+    const accountGiphyIdIdx = account.gifs.indexOf(gif.giphyId);
+
+    account.gifs.splice(accountGifIdx, 1);
+    account.giphyIds.splice(accountGiphyIdIdx, 1);
+
+    account.save(handleError('Error saving account changes to db'));
+
+    res.status(200).end();
+  } catch (e) {
+    console.log(e);
+    res.status(500).end();
+  }
+};
+
 /* WIP
 exports.postTagsToAccount = async (req, res) => {
   const { accountid } = req.params;

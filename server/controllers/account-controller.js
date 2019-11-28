@@ -86,7 +86,7 @@ exports.deleteGifFromAccount = async (req, res) => {
 
     // Remove gif from account
     const accountGifIdx = account.gifs.indexOf(gif._id);
-    const accountGiphyIdIdx = account.gifs.indexOf(gif.giphyId);
+    const accountGiphyIdIdx = account.giphyIds.indexOf(gif.giphyId);
 
     account.gifs.splice(accountGifIdx, 1);
     account.giphyIds.splice(accountGiphyIdIdx, 1);

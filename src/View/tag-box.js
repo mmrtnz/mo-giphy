@@ -2,12 +2,15 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import React, { Component } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Button,
   Chip,
   TextField,
 } from '@material-ui/core';
+
+// Internal Dependencies
+import { DbContext } from '../context/db';
 
 // Local Dependencies
 import HeartIcon from './heart-icon';
@@ -37,32 +40,33 @@ const styles = {
   },
 };
 
+const propTypes = {
+  classes: PropTypes.shape({}).isRequired,
+  giphyId: PropTypes.string.isRequired,
+  onSave: PropTypes.func.isRequired,
+  onUnsave: PropTypes.func.isRequired,
+};
+
 // Component Definition
-class TagBox extends Component {
-  static propTypes = {
-    classes: PropTypes.shape({}).isRequired,
-    onSave: PropTypes.func.isRequired,
-    onUnsave: PropTypes.func.isRequired,
-  };
+const TagBox = ({
+  classes,
+  giphyId,
+  onSave,
+  onUnsave,
+}) => {
+  const { giphyIds } = useContext(DbContext).state.apiData;
 
-  constructor() {
-    super();
-    this.state = {
-      isSaved: false,
-      tags: [],
-      tagInput: '',
-      tagInputError: '',
-    };
-  }
+  const initialIsSaved = giphyIds ? giphyIds.includes(giphyId) : false;
 
-  handleAddTag = () => {
-    const {
-      tags,
-      tagInput,
-    } = this.state;
+  const [isSaved, setIsSaved] = useState(initialIsSaved);
+  const [tags, setTags] = useState([]);
+  const [tagInput, setTagInput] = useState('');
+  const [tagInputError, setTagInputError] = useState('');
 
+
+  const handleAddTag = () => {
     if (tags.includes(tagInput)) {
-      this.setState({ tagInputError: 'Tag already exist!' });
+      setTagInputError('Tag already exist!');
       return;
     }
 
@@ -73,8 +77,7 @@ class TagBox extends Component {
     });
   };
 
-  handleDeleteTag = (e) => {
-    const { tags } = this.state;
+  const handleDeleteTag = (e) => {
     // Determine which chip was clicked. MUI attaches the event listener for deleting chips on their
     // svg icons but only propagates props to the root component, so we need to move up one level to
     // access our value attribute.
@@ -82,104 +85,83 @@ class TagBox extends Component {
     const idx = tags.indexOf(tagName);
     const newTags = tags.slice();
     newTags.splice(idx, 1);
-    this.setState({ tags: newTags });
+    setTags(newTags);
   };
 
-  handleTextChange = (e) => {
+  const handleTextChange = (e) => {
     const newInput = e.target.value;
     if (newInput.length >= 64) {
-      this.setState({ tagInputError: 'Tag is too long' });
+      setTagInputError('Tag is too long');
       return;
     }
-    this.setState({
-      tagInput: newInput,
-      tagInputError: null,
-    });
+    setTagInput(newInput);
+    setTagInputError(null);
   };
 
-  handleKeyDown = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter' && this.state.tagInput) {
-      this.handleAddTag();
+      handleAddTag();
     }
   };
 
-  toggleSave = () => {
-    const {
-      onSave,
-      onUnsave,
-    } = this.props;
-    const {
-      isSaved,
-      tags,
-    } = this.state;
-
+  const toggleSave = () => {
     const newIsSaved = !isSaved;
 
-    this.setState({ isSaved: newIsSaved });
+    setIsSaved(newIsSaved);
 
     if (newIsSaved) {
       onSave(tags);
     } else {
       onUnsave();
     }
-  }
+  };
 
-  render() {
-    const {
-      classes,
-    } = this.props;
-    const {
-      isSaved,
-      tags,
-      tagInput,
-      tagInputError,
-    } = this.state;
-
-    return (
-      <div className={classes.root}>
-        <Button
-          className={classes.saveButton}
-          onClick={this.toggleSave}
-          startIcon={isSaved ? <HeartIcon className={classes.filledHeart} /> : <HeartOutlinedIcon />}
-          variant="outlined"
-        >
-          {isSaved ? 'Saved' : 'Save'}
-        </Button>
-        <div className={
-          cx(
-            classes.tagContainer,
-            !isSaved && classes.hide,
-          )}
-        >
-          {tags.map(t => (
-            <Chip
-              data-tag={t}
-              key={`tag-${t}`}
-              label={t}
-              onDelete={this.handleDeleteTag}
-              size="small"
-              variant="outlined"
-            />
-          ))}
-          <div className={classes.addTagContainer}>
-            <TextField
-              error={Boolean(tagInputError)}
-              helperText={tagInputError || 'Tag this gif to find it later'}
-              onChange={this.handleTextChange}
-              onKeyDown={this.handleKeyDown}
-              value={tagInput}
-            />
-            <Button
-              disabled={!tagInput || Boolean(tagInputError)}
-              onClick={this.handleAddTag}
-            >
-              Add Tag
-            </Button>
-          </div>
+  return (
+    <div className={classes.root}>
+      <Button
+        className={classes.saveButton}
+        onClick={toggleSave}
+        startIcon={isSaved ? <HeartIcon className={classes.filledHeart} /> : <HeartOutlinedIcon />}
+        variant="outlined"
+      >
+        {isSaved ? 'Saved' : 'Save'}
+      </Button>
+      <div className={
+        cx(
+          classes.tagContainer,
+          !isSaved && classes.hide,
+        )}
+      >
+        {tags.map(t => (
+          <Chip
+            data-tag={t}
+            key={`tag-${t}`}
+            label={t}
+            onDelete={handleDeleteTag}
+            size="small"
+            variant="outlined"
+          />
+        ))}
+        <div className={classes.addTagContainer}>
+          <TextField
+            error={Boolean(tagInputError)}
+            helperText={tagInputError || 'Tag this gif to find it later'}
+            onChange={handleTextChange}
+            onKeyDown={handleKeyDown}
+            value={tagInput}
+          />
+          <Button
+            disabled={!tagInput || Boolean(tagInputError)}
+            onClick={handleAddTag}
+          >
+            Add Tag
+          </Button>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+TagBox.propTypes = propTypes;
 
 export default withStyles(styles)(TagBox);

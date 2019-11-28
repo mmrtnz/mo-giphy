@@ -91,6 +91,7 @@ const View = ({ classes }) => {
 
   const tagBoxElement = (
     <TagBox
+      giphyId={id}
       onSave={handleSave}
       onUnsave={handleUnsave}
     />

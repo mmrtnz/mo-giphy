@@ -21,6 +21,7 @@ import {
 } from '../context/db/actions';
 
 // Local Dependencies
+import SaveButton from './save-button';
 import TagBox from './tag-box';
 
 // Local Variables
@@ -29,8 +30,10 @@ const propTypes = {
 };
 
 const styles = {
-  filledHeart: {
-    color: '#e91e63', // pink 500
+  actionContainer: {
+    display: 'flex',
+    margin: '0px auto',
+    width: 400,
   },
   loginText: {
     margin: '0px auto',
@@ -66,12 +69,11 @@ const View = ({ classes }) => {
     title,
   } = gifData;
 
-  const handleSave = (tags) => {
+  const handleSave = () => {
     saveAccountGif(
       dbDispatch,
       dbState.apiData._id,
       gifData,
-      tags,
     );
   };
 
@@ -92,11 +94,14 @@ const View = ({ classes }) => {
   );
 
   const tagBoxElement = (
-    <TagBox
-      giphyId={id}
-      onSave={handleSave}
-      onUnsave={handleUnsave}
-    />
+    <div className={classes.actionContainer}>
+      <SaveButton
+        giphyId={id}
+        onSave={handleSave}
+        onUnsave={handleUnsave}
+      />
+      <TagBox />
+    </div>
   );
 
   return (

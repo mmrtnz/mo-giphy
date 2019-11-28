@@ -68,11 +68,10 @@ const saveSignUp = async (dispatch, username, password, onSuccess = null) => {
   postDb(dispatch, endpoint, body, onSuccess, errorMessagesByCode);
 };
 
-const saveAccountGif = async (dispatch, accountId, gifData, tags) => {
+const saveAccountGif = async (dispatch, accountId, gifData) => {
   const endpoint = `/account/${accountId}/gif`;
   const body = {
     giphyData: getMinimumGifData(gifData),
-    tags,
   };
   const errorMessagesByCode = {
     500: 'There was an error saving changes to your gif.',

@@ -2,12 +2,11 @@
 import { Base64 } from 'js-base64';
 
 // Local Dependencies
+import { postDb } from './api';
 import {
   DB_GET_FAILURE,
   DB_GET_REQUEST,
   DB_GET_SUCCESS,
-  DB_POST_FAILURE,
-  DB_POST_REQUEST,
   DB_POST_SUCCESS,
 } from './action-types';
 
@@ -16,25 +15,6 @@ const protocol = 'http';
 const baseURL = `${protocol}://localhost:3001/api`;
 
 // Action Definitions
-const postDb = async (dispatch, url, body, onData, errorMessage) => {
-  dispatch({ type: DB_POST_REQUEST });
-
-  try {
-    const data = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: { 'Content-Type': 'application/json' },
-     });
-     onData(data);
-  } catch (e) {
-    console.log('Unxpected error when posting to database: ', e);
-    dispatch({
-      type: DB_POST_FAILURE,
-      payload: errorMessage,
-    });
-  }
-};
-
 const queryDbLogin = async (dispatch, username, password, onSuccess = null) => {
   const url = `${baseURL}/login`;
   const credentials = `${username}:${password}`;
@@ -75,14 +55,14 @@ const queryDbLogin = async (dispatch, username, password, onSuccess = null) => {
 };
 
 const saveSignUp = async (dispatch, username, password, onSuccess = null) => {
-  const url = `${baseURL}/signup`;
+  const endpoint = '/signup';
   const body = {
     username: Base64.encode(username),
     password: Base64.encode(password),
   };
   const errorMessage = 'There was a problem signing up. Please try again later.';
 
-  postDb(dispatch, url, body, async (data) => {
+  postDb(dispatch, endpoint, body, async (data) => {
     if (data.status === 403) {
       dispatch({
         type: DB_GET_FAILURE,
@@ -131,14 +111,14 @@ const getMinimumGifData = ({
 });
 
 const saveAccountGif = async (dispatch, accountId, gifData, tags) => {
-  const url = `${baseURL}/account/${accountId}/gif`;
+  const endpoint = `/account/${accountId}/gif`;
   const body = {
     giphyData: getMinimumGifData(gifData),
     tags,
   };
   const errorMessage = 'There was an error saving changes to your gif.';
 
-  postDb(dispatch, url, body, () => {
+  postDb(dispatch, endpoint, body, () => {
     console.log('saveAccountGif onData');
     dispatch({
       type: DB_POST_SUCCESS,
@@ -162,6 +142,10 @@ const deleteAccountGif = async (accountId, gifId) => {
   } catch (e) {
     console.log('Unxpected error when deleting from database: ', e);
   }
+};
+
+const getAccount = async (accountId) => {
+  
 };
 
 export {

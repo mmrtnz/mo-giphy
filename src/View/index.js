@@ -71,15 +71,13 @@ const View = ({ classes }) => {
     </Typography>
   );
 
-  const handleSave = (isSaved, tags) => {
-    if (isSaved) {
-      saveAccountGif(
-        dbDispatch,
-        dbState.apiData.accountId,
-        gifData,
-        tags,
-      );
-    }
+  const handleSave = (tags) => {
+    saveAccountGif(
+      dbDispatch,
+      dbState.apiData.accountId,
+      gifData,
+      tags,
+    );
   };
 
   return (

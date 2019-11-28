@@ -54,14 +54,6 @@ class TagBox extends Component {
     };
   }
 
-  componentWillUnmount() {
-    const {
-      isSaved,
-      tags,
-    } = this.state;
-    this.props.onSave(isSaved, tags);
-  }
-
   handleAddTag = () => {
     const {
       tags,
@@ -110,9 +102,21 @@ class TagBox extends Component {
     }
   };
 
-  toggleSave = () => this.setState({
-    isSaved: !this.state.isSaved,
-  });
+  toggleSave = () => {
+    const { onSave } = this.props;
+    const {
+      isSaved,
+      tags,
+    } = this.state;
+
+    const newIsSaved = !isSaved;
+
+    this.setState({ isSaved: newIsSaved });
+
+    if (newIsSaved) {
+      onSave(tags);
+    }
+  }
 
   render() {
     const {

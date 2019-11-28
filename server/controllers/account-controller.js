@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-
+/* eslint-disable */
 // External Dependencies
 const mongoose = require('mongoose');
 
@@ -23,7 +23,7 @@ const gifFromGiphyData = ({ id, ...giphyData }) => new Gif({
 const handleError = errorMessage =>
   (error) => {
     if (error) {
-      throw new Error(errorMessage);
+      throw new Error(`${errorMessage}: ${error}`);
     }
   };
 
@@ -32,7 +32,7 @@ exports.postGifToAccount = async (req, res) => {
   const { accountid } = req.params;
   const {
     giphyData,
-    tags,
+    // TODO: handle tags
   } = req.body;
 
   try {
@@ -51,6 +51,25 @@ exports.postGifToAccount = async (req, res) => {
       // eslint-disable-next-line prefer-destructuring
       gif = gifs[0];
     }
+
+    // Save gif to account
+    account.gifs.push(gif);
+    account.giphyIds.push(giphyData.id);
+    account.save(handleError('Error saving account changes to db'));
+
+    res.status(200).end();
+  } catch (e) {
+    console.log(e);
+    res.status(500).end();
+  }
+};
+/* WIP
+exports.postTagsToAccount = async (req, res) => {
+  const { accountid } = req.params;
+  const {
+    gifId,
+    tags,
+  } = req.body;
 
     // Get tags, add them to db if they don't exist
     let tagModels = [];
@@ -76,14 +95,12 @@ exports.postGifToAccount = async (req, res) => {
     });
 
     accountGifTags.save(handleError('Error saving AccountGifTag'));
-
-    // Save gif to account
-    account.gifs.push(gif);
-    account.save(handleError('Error saving account changes to db'));
-  } catch (e) {
-    console.log(e);
-    res.status(500).end();
-  }
-
-  res.status(200).end();
 };
+
+exports.getAccount = async (req, res) => {
+  const { accountid } = req.params;
+  const account = await Account.findById(accountid);
+  console.log('account', account);
+  res.json(account).end();
+};
+*/

@@ -10,6 +10,7 @@ const AccountSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'Gif',
   }],
+  giphyIds: [String],
 });
 
 const GifSchema = new Schema({

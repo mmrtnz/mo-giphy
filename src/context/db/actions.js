@@ -7,7 +7,6 @@ import {
   DB_GET_FAILURE,
   DB_GET_REQUEST,
   DB_GET_SUCCESS,
-  DB_POST_SUCCESS,
 } from './action-types';
 
 // Local Variables
@@ -38,7 +37,7 @@ const queryDbLogin = async (dispatch, username, password, onSuccess = null) => {
     const dataJSON = await data.json();
 
     dispatch({
-      type: DB_POST_SUCCESS,
+      type: DB_GET_SUCCESS,
       payload: dataJSON,
     });
 
@@ -60,28 +59,13 @@ const saveSignUp = async (dispatch, username, password, onSuccess = null) => {
     username: Base64.encode(username),
     password: Base64.encode(password),
   };
-  const errorMessage = 'There was a problem signing up. Please try again later.';
 
-  postDb(dispatch, endpoint, body, async (data) => {
-    if (data.status === 403) {
-      dispatch({
-        type: DB_GET_FAILURE,
-        payload: 'Username already exists',
-      });
-      return;
-    }
+  const errorMessagesByCode = {
+    403: 'Username already exists',
+    500: 'There was a problem signing up. Please try again later.',
+  };
 
-    const dataJSON = await data.json();
-
-    dispatch({
-      type: DB_GET_SUCCESS,
-      payload: dataJSON,
-    });
-
-    if (onSuccess) {
-      onSuccess();
-    }
-  }, errorMessage);
+  postDb(dispatch, endpoint, body, onSuccess, errorMessagesByCode);
 };
 
 // Only extracts data to be stored in our DB
@@ -116,15 +100,11 @@ const saveAccountGif = async (dispatch, accountId, gifData, tags) => {
     giphyData: getMinimumGifData(gifData),
     tags,
   };
-  const errorMessage = 'There was an error saving changes to your gif.';
+  const errorMessagesByCode = {
+    500: 'There was an error saving changes to your gif.',
+  };
 
-  postDb(dispatch, endpoint, body, () => {
-    console.log('saveAccountGif onData');
-    dispatch({
-      type: DB_POST_SUCCESS,
-      payload: {},
-    });
-  }, errorMessage);
+  postDb(dispatch, endpoint, body, null, errorMessagesByCode);
 };
 
 const deleteAccountGif = async (accountId, gifId) => {
@@ -142,10 +122,6 @@ const deleteAccountGif = async (accountId, gifId) => {
   } catch (e) {
     console.log('Unxpected error when deleting from database: ', e);
   }
-};
-
-const getAccount = async (accountId) => {
-  
 };
 
 export {

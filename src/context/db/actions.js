@@ -2,71 +2,14 @@
 import { Base64 } from 'js-base64';
 
 // Local Dependencies
-import { postDb } from './api';
 import {
-  DB_GET_FAILURE,
-  DB_GET_REQUEST,
-  DB_GET_SUCCESS,
-} from './action-types';
+  getDb,
+  postDb,
+} from './api';
 
 // Local Variables
 const protocol = 'http';
 const baseURL = `${protocol}://localhost:3001/api`;
-
-// Action Definitions
-const queryDbLogin = async (dispatch, username, password, onSuccess = null) => {
-  const url = `${baseURL}/login`;
-  const credentials = `${username}:${password}`;
-  const headers = {
-    Authorization: `Basic ${Base64.encode(credentials)}`,
-  };
-
-  dispatch({ type: DB_GET_REQUEST });
-
-  try {
-    const data = await fetch(url, { headers });
-
-    if (data.status === 401) {
-      dispatch({
-        type: DB_GET_FAILURE,
-        payload: 'Invalid username or password',
-      });
-      return;
-    }
-
-    const dataJSON = await data.json();
-
-    dispatch({
-      type: DB_GET_SUCCESS,
-      payload: dataJSON,
-    });
-
-    if (onSuccess) {
-      onSuccess();
-    }
-  } catch (e) {
-    console.log('Unxpected error when logging in: ', e);
-    dispatch({
-      type: DB_GET_FAILURE,
-      payload: 'There was a problem logging into your account. Please try again later.',
-    });
-  }
-};
-
-const saveSignUp = async (dispatch, username, password, onSuccess = null) => {
-  const endpoint = '/signup';
-  const body = {
-    username: Base64.encode(username),
-    password: Base64.encode(password),
-  };
-
-  const errorMessagesByCode = {
-    403: 'Username already exists',
-    500: 'There was a problem signing up. Please try again later.',
-  };
-
-  postDb(dispatch, endpoint, body, onSuccess, errorMessagesByCode);
-};
 
 // Only extracts data to be stored in our DB
 const getMinimumGifData = ({
@@ -93,6 +36,37 @@ const getMinimumGifData = ({
   },
   title,
 });
+
+// Action Definitions
+const queryDbLogin = async (dispatch, username, password, onSuccess = null) => {
+  const endpoint = '/login';
+  const credentials = `${username}:${password}`;
+  const body = {
+    headers: {
+      Authorization: `Basic ${Base64.encode(credentials)}`,
+    },
+  };
+  const errorMessagesByCode = {
+    401: 'Invalid username or password',
+    500: 'There was a problem logging into your account. Please try again later.',
+  };
+
+  getDb(dispatch, endpoint, body, onSuccess, errorMessagesByCode);
+};
+
+const saveSignUp = async (dispatch, username, password, onSuccess = null) => {
+  const endpoint = '/signup';
+  const body = {
+    username: Base64.encode(username),
+    password: Base64.encode(password),
+  };
+  const errorMessagesByCode = {
+    403: 'Username already exists',
+    500: 'There was a problem signing up. Please try again later.',
+  };
+
+  postDb(dispatch, endpoint, body, onSuccess, errorMessagesByCode);
+};
 
 const saveAccountGif = async (dispatch, accountId, gifData, tags) => {
   const endpoint = `/account/${accountId}/gif`;
@@ -124,8 +98,19 @@ const deleteAccountGif = async (accountId, gifId) => {
   }
 };
 
+const getAccount = async (dispatch, accountId) => {
+  console.log('hellooooo');
+  const endpoint = `/account/${accountId}`;
+  const errorMessagesByCode = {
+    500: 'There was a getting your account data. Please try again later.',
+  };
+
+  getDb(dispatch, endpoint, {}, null, errorMessagesByCode);
+};
+
 export {
   deleteAccountGif,
+  getAccount,
   queryDbLogin,
   saveSignUp,
   saveAccountGif,

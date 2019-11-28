@@ -42,6 +42,7 @@ class TagBox extends Component {
   static propTypes = {
     classes: PropTypes.shape({}).isRequired,
     onSave: PropTypes.func.isRequired,
+    onUnsave: PropTypes.func.isRequired,
   };
 
   constructor() {
@@ -103,7 +104,10 @@ class TagBox extends Component {
   };
 
   toggleSave = () => {
-    const { onSave } = this.props;
+    const {
+      onSave,
+      onUnsave,
+    } = this.props;
     const {
       isSaved,
       tags,
@@ -115,6 +119,8 @@ class TagBox extends Component {
 
     if (newIsSaved) {
       onSave(tags);
+    } else {
+      onUnsave();
     }
   }
 

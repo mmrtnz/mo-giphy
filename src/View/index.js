@@ -1,4 +1,3 @@
-/* eslint-disable */
 // External Dependencies
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
@@ -10,12 +9,15 @@ import {
 } from '@material-ui/core';
 
 // Internal Dependencies
+import GifImage from '../gif-image';
 import { DbContext } from '../context/db';
 import { getGifById } from '../context/giphy/selectors';
 import { GiphyContext } from '../context/giphy';
 import { queryGiphyById } from '../context/giphy/actions';
-import { saveAccountGif } from '../context/db/actions';
-import GifImage from '../gif-image';
+import {
+  deleteAccountGif,
+  saveAccountGif,
+} from '../context/db/actions';
 
 // Local Dependencies
 import TagBox from './tag-box';
@@ -62,15 +64,6 @@ const View = ({ classes }) => {
     title,
   } = gifData;
 
-  const loginText = (
-    <Typography
-      className={classes.loginText}
-      variant="subtitle1"
-    >
-      Login to save this gif to your account
-    </Typography>
-  );
-
   const handleSave = (tags) => {
     saveAccountGif(
       dbDispatch,
@@ -80,6 +73,29 @@ const View = ({ classes }) => {
     );
   };
 
+  const handleUnsave = () => {
+    deleteAccountGif(
+      dbState.apiData.accountId,
+      gifData.id,
+    );
+  };
+
+  const loginText = (
+    <Typography
+      className={classes.loginText}
+      variant="subtitle1"
+    >
+      Login to save this gif to your account
+    </Typography>
+  );
+
+  const tagBoxElement = (
+    <TagBox
+      onSave={handleSave}
+      onUnsave={handleUnsave}
+    />
+  );
+
   return (
     <div className={classes.root}>
       <GifImage
@@ -87,7 +103,7 @@ const View = ({ classes }) => {
         image={images.original}
         title={title}
       />
-      {isLoggedIn ? <TagBox onSave={handleSave} /> : loginText}
+      {isLoggedIn ? tagBoxElement : loginText}
     </div>
   );
 };

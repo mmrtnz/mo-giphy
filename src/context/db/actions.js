@@ -42,7 +42,7 @@ const queryDbLogin = async (dispatch, username, password, onSuccess = null) => {
     Authorization: `Basic ${Base64.encode(credentials)}`,
   };
 
-  dispatch({ type: DB_POST_REQUEST });
+  dispatch({ type: DB_GET_REQUEST });
 
   try {
     const data = await fetch(url, { headers });
@@ -130,7 +130,6 @@ const getMinimumGifData = ({
   title,
 });
 
-
 const saveAccountGif = async (dispatch, accountId, gifData, tags) => {
   const url = `${baseURL}/account/${accountId}/gif`;
   const body = {
@@ -148,7 +147,25 @@ const saveAccountGif = async (dispatch, accountId, gifData, tags) => {
   }, errorMessage);
 };
 
+const deleteAccountGif = async (accountId, gifId) => {
+  const url = `${baseURL}/account/${accountId}/gif/${gifId}`;
+  const errorMessage = 'There was an error deleting this gif from your account.';
+
+  try {
+    const data = await fetch(url, {
+      method: 'DELETE',
+     });
+
+    if (data.status !== 200) {
+      throw new Error(errorMessage);
+    }
+  } catch (e) {
+    console.log('Unxpected error when deleting from database: ', e);
+  }
+};
+
 export {
+  deleteAccountGif,
   queryDbLogin,
   saveSignUp,
   saveAccountGif,

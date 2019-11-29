@@ -138,32 +138,70 @@ exports.postTagsToAccount = async (req, res) => {
   tagModels = tagModels.concat(matchingTags);
 
   // Update link between tags, gif, and account
-  const accountGifTags = await AccountGifTag.find({
+  const query = {
     accountId: accountid,
     gifId: gif._id,
-  });
-
-  let selectedAccountGif;
-  if (!accountGifTags.length) {
-    selectedAccountGif = new AccountGifTag({
-      accountId: account._id,
-      gifId: gif._id,
+  };
+  const update = {
+    $set: {
       tagIds: tagModels,
-    });
-  } else {
-    // eslint-disable-next-line prefer-destructuring
-    selectedAccountGif = accountGifTags[0];
-    selectedAccountGif.tagsIds = tagModels;
-  }
+    },
+  };
 
-  selectedAccountGif.save(handleError('Error saving AccountGifTag'));
+  await AccountGifTag.updateOne(query, update, null, (err, result) => {
+    if (err) {
+      handleError(err);
+      return;
+    }
 
-  // Returns account in order to persist state of db reducer on client side
-  res.json(account).end();
+    // Add tag to database if it didn't exist
+    if (!result.n) {
+      const newAccountGifTag = new AccountGifTag({
+        accountId: account,
+        gifId: gif[0],
+        tagIds: tagModels,
+      });
+      newAccountGifTag.save(handleError('Error saving new AccountGifTag'));
+    }
+
+    res.json({
+      gif: gif[0],
+      tags,
+    }).end();
+  });
 };
 
 exports.getAccount = async (req, res) => {
   const { accountid } = req.params;
   const account = await Account.findById(accountid);
   res.json(account).end();
+};
+
+exports.getAccountGifTags = async (req, res) => {
+  const {
+    accountid,
+    giphyid,
+  } = req.params;
+  const gif = await Gif.find({ giphyId: giphyid });
+
+  const accountGifTags = await AccountGifTag.find({
+    accountId: new ObjectId(accountid),
+    gifId: gif[0]._id,
+  });
+
+  if (!accountGifTags.length) {
+    res.json({
+      gif: gif[0],
+      tags: [],
+    }).end();
+    return;
+  }
+
+  const tags = await Tag.find({ _id: { $in: accountGifTags[0].tagIds } });
+  const tagNames = tags.map(t => t.description);
+
+  res.json({
+    gif: gif[0],
+    tags: tagNames,
+  }).end();
 };

@@ -53,7 +53,7 @@ const View = ({ classes }) => {
   const { id } = useParams();
   const { state: giphyState, dispatch } = useContext(GiphyContext);
   const { state: dbState, dispatch: dbDispatch } = useContext(DbContext);
-  const isLoggedIn = Boolean(dbState.apiData);
+  const isLoggedIn = Boolean(dbState.account.apiData);
   const gifData = getGifById(giphyState, id);
 
   console.log('dbState', dbState);
@@ -70,7 +70,7 @@ const View = ({ classes }) => {
     title,
   } = gifData;
 
-  const accountId = dbState.apiData ? dbState.apiData._id : null;
+  const accountId = dbState.account.apiData ? dbState.account.apiData._id : null;
 
   const handleUpdateTags = (tags) => {
     postTags(dbDispatch, accountId, gifData.id, tags);

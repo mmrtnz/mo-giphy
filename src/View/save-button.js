@@ -38,7 +38,7 @@ const SaveButton = ({
   onSave,
   onUnsave,
 }) => {
-  const { giphyIds } = useContext(DbContext).state.apiData;
+  const { giphyIds } = useContext(DbContext).state.account.apiData;
   const initialIsSaved = giphyIds ? giphyIds.includes(giphyId) : false;
   const [isSaved, setIsSaved] = useState(initialIsSaved);
 

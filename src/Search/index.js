@@ -36,7 +36,7 @@ const Search = ({ classes }) => {
   const handleSearch = searchTerm => queryGiphyBySearch(searchTerm, giphyDispatch);
 
   useEffect(() => {
-    const { apiData } = state;
+    const { apiData } = state.account;
     if (apiData && apiData._id) {
       getAccount(dbDispatch, apiData._id);
     }

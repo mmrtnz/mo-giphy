@@ -9,10 +9,12 @@ import reducer from './reducers';
 export const DbContext = React.createContext({});
 
 const initialState = {
-  apiData: null,
-  error: null,
-  isGetting: false,
-  isPosting: false,
+  account: {
+    apiData: null,
+    error: null,
+    isGetting: false,
+    isPosting: false,
+  },
 };
 
 const propTypes = {

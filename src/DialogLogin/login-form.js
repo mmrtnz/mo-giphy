@@ -62,11 +62,11 @@ const LoginForm = ({
     usernameError,
   } = form;
 
-  const errorElement = state.error
+  const errorElement = state.account.error
     ? (
       <div className={classes.error}>
         <ErrorOutlineIcon className={classes.errorIcon} />
-        <Typography variant="subtitle2">{state.error}</Typography>
+        <Typography variant="subtitle2">{state.account.error}</Typography>
       </div>
     ) : null;
 

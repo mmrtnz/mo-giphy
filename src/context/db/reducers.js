@@ -1,46 +1,38 @@
 // Local Dependencies
-import {
-  DB_GET_REQUEST,
-  DB_GET_SUCCESS,
-  DB_GET_FAILURE,
-  DB_POST_REQUEST,
-  DB_POST_SUCCESS,
-  DB_POST_FAILURE,
-} from './action-types';
+import * as actionTypes from './action-types';
 
-// Seperate data from multiple vs single gifs
-export default (state, action) => {
+export default (state, action, actionContext) => {
   switch (action.type) {
-    case DB_GET_REQUEST:
+    case actionTypes[`DB_GET_REQUEST_${actionContext}`]:
       return {
         ...state,
         isGetting: true,
       };
-    case DB_GET_SUCCESS:
+    case actionTypes[`DB_GET_SUCCESS_${actionContext}`]:
       return {
         ...state,
         apiData: action.payload,
         error: null,
         isGetting: false,
       };
-    case DB_GET_FAILURE:
+    case actionTypes[`DB_GET_FAILURE_${actionContext}`]:
       return {
         ...state,
         error: action.payload,
         isGetting: false,
       };
-    case DB_POST_FAILURE:
+    case actionTypes[`DB_POST_FAILURE_${actionContext}`]:
       return {
         ...state,
         error: action.payload,
         isPosting: false,
       };
-    case DB_POST_REQUEST:
+    case actionTypes[`DB_POST_REQUEST_${actionContext}`]:
       return {
         ...state,
         isPosting: true,
       };
-    case DB_POST_SUCCESS:
+    case actionTypes[`DB_POST_SUCCESS_${actionContext}`]:
       return {
         ...state,
         apiData: action.payload,

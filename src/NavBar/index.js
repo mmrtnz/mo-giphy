@@ -54,7 +54,7 @@ const TabElement = ({ className, children }) => (
 
 // Component Definition
 const NavBar = ({ classes }) => {
-  const { apiData } = useContext(DbContext).state;
+  const { apiData } = useContext(DbContext).state.account;
   const [isOpen, setIsOpen] = useState(false);
 
   const accountUsername = apiData ? apiData.username : null;

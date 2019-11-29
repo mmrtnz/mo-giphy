@@ -1,22 +1,15 @@
 // Local Dependencies
-import {
-  DB_GET_FAILURE,
-  DB_GET_SUCCESS,
-  DB_GET_REQUEST,
-  DB_POST_FAILURE,
-  DB_POST_SUCCESS,
-  DB_POST_REQUEST,
-} from './action-types';
+import * as actionTypes from './action-types';
 
 // Local Variables
 const protocol = 'http';
 const baseURL = `${protocol}://localhost:3001/api`;
 
 // Action Definitions
-export const getDb = async (dispatch, endpoint, body, onSuccess, errorMessagesByCode) => {
+export const getDb = async (dispatch, endpoint, body, actionContext, onSuccess, errorMessagesByCode) => {
   const url = `${baseURL}${endpoint}`;
 
-  dispatch({ type: DB_GET_REQUEST });
+  dispatch({ type: actionTypes[`DB_GET_REQUEST_${actionContext}`] });
 
   try {
     const data = await fetch(url, body);
@@ -25,7 +18,7 @@ export const getDb = async (dispatch, endpoint, body, onSuccess, errorMessagesBy
       const errorMessage = errorMessagesByCode[data.status];
 
       dispatch({
-        type: DB_GET_FAILURE,
+        type: actionTypes[`DB_GET_FAILURE_${actionContext}`],
         payload: errorMessage,
       });
 
@@ -35,7 +28,7 @@ export const getDb = async (dispatch, endpoint, body, onSuccess, errorMessagesBy
     const dataJSON = await data.json();
 
     dispatch({
-      type: DB_GET_SUCCESS,
+      type: actionTypes[`DB_GET_SUCCESS_${actionContext}`],
       payload: dataJSON,
     });
 
@@ -45,16 +38,16 @@ export const getDb = async (dispatch, endpoint, body, onSuccess, errorMessagesBy
   } catch (e) {
     console.log('Unxpected error when getting from database: ', e);
     dispatch({
-      type: DB_GET_FAILURE,
+      type: actionTypes[`DB_GET_FAILURE_${actionContext}`],
       payload: 'An error occured, please try again later',
     });
   }
 };
 
-export const postDb = async (dispatch, endpoint, body, onSuccess, errorMessagesByCode) => {
+export const postDb = async (dispatch, endpoint, body, actionContext, onSuccess, errorMessagesByCode) => {
   const url = `${baseURL}${endpoint}`;
 
-  dispatch({ type: DB_POST_REQUEST });
+  dispatch({ type: actionTypes[`DB_POST_REQUEST_${actionContext}`] });
 
   try {
     const data = await fetch(url, {
@@ -67,7 +60,7 @@ export const postDb = async (dispatch, endpoint, body, onSuccess, errorMessagesB
       const errorMessage = errorMessagesByCode[data.status];
 
       dispatch({
-        type: DB_POST_FAILURE,
+        type: actionTypes[`DB_POST_FAILURE_${actionContext}`],
         payload: errorMessage,
       });
 
@@ -77,7 +70,7 @@ export const postDb = async (dispatch, endpoint, body, onSuccess, errorMessagesB
     const dataJSON = await data.json();
 
     dispatch({
-      type: DB_POST_SUCCESS,
+      type: actionTypes[`DB_POST_SUCCESS_${actionContext}`],
       payload: dataJSON,
     });
 
@@ -87,7 +80,7 @@ export const postDb = async (dispatch, endpoint, body, onSuccess, errorMessagesB
   } catch (e) {
     console.log('Unexpected error when posting to database: ', e);
     dispatch({
-      type: DB_POST_FAILURE,
+      type: actionTypes[`DB_POST_FAILURE_${actionContext}`],
       payload: 'An error occured, please try again later',
     });
   }

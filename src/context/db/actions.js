@@ -10,6 +10,7 @@ import {
 // Local Variables
 const protocol = 'http';
 const baseURL = `${protocol}://localhost:3001/api`;
+const accountContext = 'ACCOUNT';
 
 // Only extracts data to be stored in our DB
 const getMinimumGifData = ({
@@ -51,7 +52,7 @@ const queryDbLogin = async (dispatch, username, password, onSuccess = null) => {
     500: 'There was a problem logging into your account. Please try again later.',
   };
 
-  getDb(dispatch, endpoint, body, onSuccess, errorMessagesByCode);
+  getDb(dispatch, endpoint, body, accountContext, onSuccess, errorMessagesByCode);
 };
 
 const saveSignUp = async (dispatch, username, password, onSuccess = null) => {
@@ -65,7 +66,7 @@ const saveSignUp = async (dispatch, username, password, onSuccess = null) => {
     500: 'There was a problem signing up. Please try again later.',
   };
 
-  postDb(dispatch, endpoint, body, onSuccess, errorMessagesByCode);
+  postDb(dispatch, endpoint, body, accountContext, onSuccess, errorMessagesByCode);
 };
 
 const saveAccountGif = async (dispatch, accountId, gifData) => {
@@ -77,7 +78,7 @@ const saveAccountGif = async (dispatch, accountId, gifData) => {
     500: 'There was an error saving changes to your gif.',
   };
 
-  postDb(dispatch, endpoint, body, null, errorMessagesByCode);
+  postDb(dispatch, endpoint, body, accountContext, null, errorMessagesByCode);
 };
 
 const deleteAccountGif = async (accountId, gifId) => {
@@ -103,7 +104,7 @@ const getAccount = async (dispatch, accountId) => {
     500: 'There was a getting your account data. Please try again later.',
   };
 
-  getDb(dispatch, endpoint, {}, null, errorMessagesByCode);
+  getDb(dispatch, endpoint, {}, accountContext, null, errorMessagesByCode);
 };
 
 const postTags = async (dispatch, accountId, gifId, tags) => {
@@ -116,7 +117,7 @@ const postTags = async (dispatch, accountId, gifId, tags) => {
     500: 'There was an error updating tags for this gif.',
   };
 
-  postDb(dispatch, endpoint, body, null, errorMessagesByCode);
+  postDb(dispatch, endpoint, body, accountContext, null, errorMessagesByCode);
 };
 
 export {

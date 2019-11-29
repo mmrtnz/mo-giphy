@@ -57,7 +57,8 @@ exports.postGifToAccount = async (req, res) => {
     account.giphyIds.push(giphyData.id);
     account.save(handleError('Error saving account changes to db'));
 
-    res.status(200).end();
+    // Returns account in order to persist state of db reducer on client side
+    res.json(account).end();
   } catch (e) {
     console.log(e);
     res.status(500).end();

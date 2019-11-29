@@ -15,6 +15,11 @@ const initialState = {
     isGetting: false,
     isPosting: false,
   },
+  gifs: {
+    apiData: null,
+    error: null,
+    isGetting: false,
+  },
 };
 
 const propTypes = {

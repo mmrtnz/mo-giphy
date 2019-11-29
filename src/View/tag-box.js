@@ -1,12 +1,19 @@
 // External Dependencies
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import React, { useState } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {
   Button,
   Chip,
   TextField,
 } from '@material-ui/core';
+
+// Internal Dependencies
+import { DbContext } from '../context/db';
 
 // Local Variables
 const styles = {
@@ -28,9 +35,16 @@ const TagBox = ({
   classes,
   onTagChange,
 }) => {
+  const { state } = useContext(DbContext);
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
   const [tagInputError, setTagInputError] = useState('');
+
+  useEffect(() => {
+    if (!state.gifs.apiData) {
+      console.log('do stuff');
+    }
+  }, []);
 
   const handleAddTag = () => {
     if (tags.includes(tagInput)) {

@@ -2,6 +2,9 @@
 import { Base64 } from 'js-base64';
 
 // Local Dependencies
+import { DB_RESET_GIFS } from './action-types';
+
+// Local Dependencies
 import {
   getDb,
   postDb,
@@ -127,8 +130,10 @@ const postTags = async (dispatch, accountId, gifId, tags) => {
     500: 'There was an error updating tags for this gif.',
   };
 
-  postDb(dispatch, endpoint, body, accountContext, null, errorMessagesByCode);
+  postDb(dispatch, endpoint, body, gifContext, null, errorMessagesByCode);
 };
+
+const resetAccountGifData = dispatch => dispatch({ type: DB_RESET_GIFS });
 
 export {
   deleteAccountGif,
@@ -136,6 +141,7 @@ export {
   getAccountGif,
   postTags,
   queryDbLogin,
+  resetAccountGifData,
   saveSignUp,
   saveAccountGif,
 };

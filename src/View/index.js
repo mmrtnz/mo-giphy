@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 // External Dependencies
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -19,6 +19,7 @@ import {
   getAccountGif,
   deleteAccountGif,
   postTags,
+  resetAccountGifData,
   saveAccountGif,
 } from '../context/db/actions';
 
@@ -57,7 +58,9 @@ const View = ({ classes }) => {
   const isLoggedIn = Boolean(dbState.account.apiData);
   const gifData = getGifById(giphyState, giphyId);
 
-  console.log('dbState', dbState);
+  // Reset current gif data when leaving page
+  useEffect(() => () => !console.log('reset') && resetAccountGifData(dbDispatch), []);
+
   if (!gifData) {
     // Call the API for specific gif if we haven't already
     if (!giphyState.single.isGetting) {

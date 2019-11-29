@@ -11,6 +11,7 @@ import {
   DB_GET_REQUEST_GIFS,
   DB_GET_SUCCESS_GIFS,
   DB_GET_FAILURE_GIFS,
+  DB_RESET_GIFS,
 } from './action-types';
 
 export default (state, action) => {
@@ -110,6 +111,15 @@ export default (state, action) => {
         gifs: {
           ...state.gifs,
           error: action.payload,
+          isGetting: false,
+        },
+      };
+    case DB_RESET_GIFS:
+      return {
+        ...state,
+        gifs: {
+          apiData: null,
+          error: null,
           isGetting: false,
         },
       };

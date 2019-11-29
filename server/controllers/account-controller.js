@@ -64,6 +64,7 @@ exports.postGifToAccount = async (req, res) => {
   }
 };
 
+// TODO: delete AccountGifTag associated with gif
 exports.deleteGifFromAccount = async (req, res) => {
   const {
     accountid,
@@ -100,40 +101,66 @@ exports.deleteGifFromAccount = async (req, res) => {
   }
 };
 
-/* WIP
 exports.postTagsToAccount = async (req, res) => {
   const { accountid } = req.params;
   const {
-    gifId,
+    giphyId,
     tags,
   } = req.body;
 
-    // Get tags, add them to db if they don't exist
-    let tagModels = [];
-    const matchingTags = await Tag.find({ description: { $in: tags } });
-    const matchingTagNames = matchingTags.map(t => t.description);
-    const newTags = tags.filter(t => !matchingTagNames.includes(t));
+  const account = await Account.findById(accountid);
 
-    newTags.forEach((tagName) => {
-      console.log(`Saving new tag ${tagName}`);
-      const currentTagModel = new Tag({ description: tagName });
+  if (!account) {
+    res.status(500).send('Couldn\'t find account when adding tags');
+  }
 
-      tagModels.push(currentTagModel);
-      currentTagModel.save(handleError(`Error saving tag ${tagName} to db`));
-    });
+  const gif = await Gif.find({ giphyId });
 
-    tagModels = tagModels.concat(matchingTags);
+  if (!gif) {
+    res.status(500).send('Couldn\'t find gif when adding tags');
+  }
 
-    // Update/create link between tags, gif, and account
-    const accountGifTags = new AccountGifTag({
+  // Get tags, add them to db if they don't exist
+  let tagModels = [];
+  const matchingTags = await Tag.find({ description: { $in: tags } });
+  const matchingTagNames = matchingTags.map(t => t.description);
+  const newTags = tags.filter(t => !matchingTagNames.includes(t));
+
+  newTags.forEach((tagName) => {
+    console.log(`Saving new tag ${tagName}`);
+    const currentTagModel = new Tag({ description: tagName });
+
+    tagModels.push(currentTagModel);
+    currentTagModel.save(handleError(`Error saving tag ${tagName} to db`));
+  });
+
+  tagModels = tagModels.concat(matchingTags);
+
+  // Update link between tags, gif, and account
+  const accountGifTags = await AccountGifTag.find({
+    accountId: accountid,
+    gifId: gif._id,
+  });
+
+  let selectedAccountGif;
+  if (!accountGifTags.length) {
+    selectedAccountGif = new AccountGifTag({
       accountId: account._id,
       gifId: gif._id,
       tagIds: tagModels,
     });
+  } else {
+    // eslint-disable-next-line prefer-destructuring
+    selectedAccountGif = accountGifTags[0];
+    selectedAccountGif.tagsIds = tagModels;
+  }
 
-    accountGifTags.save(handleError('Error saving AccountGifTag'));
+  selectedAccountGif.save(handleError('Error saving AccountGifTag'));
+
+  // Returns account in order to persist state of db reducer on client side
+  res.json(account).end();
 };
-*/
+
 exports.getAccount = async (req, res) => {
   const { accountid } = req.params;
   const account = await Account.findById(accountid);

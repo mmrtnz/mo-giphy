@@ -16,6 +16,7 @@ import { getGifById } from '../context/giphy/selectors';
 import { GiphyContext } from '../context/giphy';
 import { queryGiphyById } from '../context/giphy/actions';
 import {
+  getAccountGif,
   deleteAccountGif,
   postTags,
   saveAccountGif,
@@ -50,17 +51,17 @@ const styles = {
 
 // Component Definition
 const View = ({ classes }) => {
-  const { id } = useParams();
+  const { id: giphyId } = useParams();
   const { state: giphyState, dispatch } = useContext(GiphyContext);
   const { state: dbState, dispatch: dbDispatch } = useContext(DbContext);
   const isLoggedIn = Boolean(dbState.account.apiData);
-  const gifData = getGifById(giphyState, id);
+  const gifData = getGifById(giphyState, giphyId);
 
   console.log('dbState', dbState);
   if (!gifData) {
     // Call the API for specific gif if we haven't already
     if (!giphyState.single.isGetting) {
-      queryGiphyById(id, dispatch);
+      queryGiphyById(giphyId, dispatch);
     }
     return <CircularProgress />;
   }
@@ -72,17 +73,17 @@ const View = ({ classes }) => {
 
   const accountId = dbState.account.apiData ? dbState.account.apiData._id : null;
 
-  const handleUpdateTags = (tags) => {
+  const handleGetTags = () =>
+    getAccountGif(dbDispatch, accountId, giphyId);
+
+  const handleUpdateTags = tags =>
     postTags(dbDispatch, accountId, gifData.id, tags);
-  };
 
-  const handleSave = () => {
+  const handleSave = () =>
     saveAccountGif(dbDispatch, accountId, gifData);
-  };
 
-  const handleUnsave = () => {
+  const handleUnsave = () =>
     deleteAccountGif(accountId, gifData.id);
-  };
 
   const loginText = (
     <Typography
@@ -96,11 +97,14 @@ const View = ({ classes }) => {
   const tagBoxElement = (
     <div className={classes.actionContainer}>
       <SaveButton
-        giphyId={id}
+        giphyId={giphyId}
         onSave={handleSave}
         onUnsave={handleUnsave}
       />
-      <TagBox onTagChange={handleUpdateTags} />
+      <TagBox
+        onGetTags={handleGetTags}
+        onTagChange={handleUpdateTags}
+      />
     </div>
   );
 

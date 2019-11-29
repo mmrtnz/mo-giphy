@@ -27,12 +27,14 @@ const styles = {
 
 const propTypes = {
   classes: PropTypes.shape({}).isRequired,
+  onGetTags: PropTypes.func.isRequired,
   onTagChange: PropTypes.func.isRequired,
 };
 
 // Component Definition
 const TagBox = ({
   classes,
+  onGetTags,
   onTagChange,
 }) => {
   const { state } = useContext(DbContext);
@@ -41,8 +43,8 @@ const TagBox = ({
   const [tagInputError, setTagInputError] = useState('');
 
   useEffect(() => {
-    if (!state.gifs.apiData) {
-      console.log('do stuff');
+    if (!state.gifs.apiData && !state.gifs.isGetting) {
+      onGetTags();
     }
   }, []);
 

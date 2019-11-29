@@ -11,6 +11,7 @@ import {
 const protocol = 'http';
 const baseURL = `${protocol}://localhost:3001/api`;
 const accountContext = 'ACCOUNT';
+const gifContext = 'GIFS';
 
 // Only extracts data to be stored in our DB
 const getMinimumGifData = ({
@@ -69,6 +70,15 @@ const saveSignUp = async (dispatch, username, password, onSuccess = null) => {
   postDb(dispatch, endpoint, body, accountContext, onSuccess, errorMessagesByCode);
 };
 
+const getAccountGif = async (dispatch, accountId, giphyId) => {
+  const endpoint = `/account/${accountId}/gif/${giphyId}`;
+  const errorMessagesByCode = {
+    500: 'There was an error getting details for this gif.',
+  };
+
+  getDb(dispatch, endpoint, null, gifContext, null, errorMessagesByCode);
+};
+
 const saveAccountGif = async (dispatch, accountId, gifData) => {
   const endpoint = `/account/${accountId}/gif`;
   const body = {
@@ -123,6 +133,7 @@ const postTags = async (dispatch, accountId, gifId, tags) => {
 export {
   deleteAccountGif,
   getAccount,
+  getAccountGif,
   postTags,
   queryDbLogin,
   saveSignUp,

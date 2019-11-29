@@ -25,12 +25,17 @@ export const getDb = async (dispatch, endpoint, body, actionContext, onSuccess, 
       return;
     }
 
-    const dataJSON = await data.json();
-
-    dispatch({
-      type: actionTypes[`DB_GET_SUCCESS_${actionContext}`],
-      payload: dataJSON,
-    });
+    try {
+      const dataJSON = await data.json();
+      dispatch({
+        type: actionTypes[`DB_GET_SUCCESS_${actionContext}`],
+        payload: dataJSON,
+      });
+    } catch {
+      dispatch({
+        type: actionTypes[`DB_GET_SUCCESS_NO_DATA_${actionContext}`],
+      });
+    }
 
     if (onSuccess) {
       onSuccess();
@@ -67,12 +72,17 @@ export const postDb = async (dispatch, endpoint, body, actionContext, onSuccess,
       return;
     }
 
-    const dataJSON = await data.json();
-
-    dispatch({
-      type: actionTypes[`DB_POST_SUCCESS_${actionContext}`],
-      payload: dataJSON,
-    });
+    try {
+      const dataJSON = await data.json();
+      dispatch({
+        type: actionTypes[`DB_POST_SUCCESS_${actionContext}`],
+        payload: dataJSON,
+      });
+    } catch {
+      dispatch({
+        type: actionTypes[`DB_POST_SUCCESS_NO_DATA_${actionContext}`],
+      });
+    }
 
     if (onSuccess) {
       onSuccess();

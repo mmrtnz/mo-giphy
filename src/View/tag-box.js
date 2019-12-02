@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import React, {
   useContext,
-  useEffect,
   useState,
 } from 'react';
 import {
   Button,
+  CircularProgress,
   Chip,
   TextField,
 } from '@material-ui/core';
@@ -37,16 +37,15 @@ const TagBox = ({
   onGetTags,
   onTagChange,
 }) => {
-  const { state } = useContext(DbContext);
-  const [tags, setTags] = useState([]);
+  const { gifs } = useContext(DbContext).state;
+  const tags = gifs.apiData ? gifs.apiData.tags : [];
   const [tagInput, setTagInput] = useState('');
   const [tagInputError, setTagInputError] = useState('');
 
-  useEffect(() => {
-    if (!state.gifs.apiData && !state.gifs.isGetting) {
-      onGetTags();
-    }
-  }, []);
+  if (!gifs.apiData && !gifs.isGetting) {
+    onGetTags();
+    return <CircularProgress />;
+  }
 
   const handleAddTag = () => {
     if (tags.includes(tagInput)) {
@@ -55,7 +54,6 @@ const TagBox = ({
     }
 
     tags.push(tagInput);
-    setTags(tags);
     setTagInput('');
     setTagInputError('');
     onTagChange(tags);
@@ -69,7 +67,6 @@ const TagBox = ({
     const idx = tags.indexOf(tagName);
     const newTags = tags.slice();
     newTags.splice(idx, 1);
-    setTags(newTags);
     onTagChange(newTags);
   };
 

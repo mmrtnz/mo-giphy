@@ -32,9 +32,9 @@ const propTypes = {
 const DialogLogin = ({ onSuccess, ...props }) => {
   const { dispatch, state } = useContext(DbContext);
   const [form, setForm] = useState({
-    password: 'test1234',
+    password: '',
     passwordError: '',
-    username: 'testuser',
+    username: '',
     usernameError: '',
   });
 

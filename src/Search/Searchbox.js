@@ -30,7 +30,7 @@ const SearchBox = ({
   classes,
   onSearch,
 }) => {
-  const [searchInput, setSearchInput] = useState('hello');
+  const [searchInput, setSearchInput] = useState('');
   return (
     <div className={classes.root}>
         <TextField
